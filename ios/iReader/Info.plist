@@ -55,6 +55,11 @@
         <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
         <true/>
       </dict>
+      <key>api.hytdsm.com</key>
+      <dict>
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+      </dict>
 
 			<key>localhost</key>
 			<dict>
