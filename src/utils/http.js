@@ -5,13 +5,13 @@ const httpFactory = method => async (url, params = {}) => {
   return new Promise((resove, reject) => {
     if (method == 'Get') {
       axios.get(url, params).then(res => {
-        resove(res);
+        resove(res.data);
       }).catch(err => {
         reject(res);
       })
     } else if (method == 'Post') {
       axios.post(url, qs.stringify(params)).then(res => {
-        resove(res);
+        resove(res.data);
       }).catch(err => {
         reject(err);
       })

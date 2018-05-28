@@ -7,11 +7,11 @@ import {
   StyleSheet,
 } from 'react-native';
 import { DataList, Header, BookItem, BasePage } from '../../components';
-import {getNewRecommend, getBookDetail} from './index.service';
+import {getTopList, getBookDetail} from './index.service';
 
-export default class Recommend extends BasePage {
+export default class TopList extends BasePage {
   static navigationOptions = {
-    tabBarLabel: '最新推荐',
+    tabBarLabel: '排行榜',
     // tabBarIcon: ({ focused }) => (
     //   <Image
     //     style={{ width: 24, height: 24 }}
@@ -30,7 +30,7 @@ export default class Recommend extends BasePage {
 
   _headerProps() {
     return {
-      title: '最新推荐',
+      title: '排行榜',
       left: <View />,
     }
   }
@@ -40,15 +40,13 @@ export default class Recommend extends BasePage {
   goDetail(id) {
     this.nav.push('BookDetail', {id});
   }
-  goDetail(id) {
-    console.log(id);
-  }
   _render() {
     return (
       <View style={{backgroundColor: 'white', flex: 1}}>
         <DataList 
-          options={{sex: 1}}
-          service={getNewRecommend}
+          options={{sex: 1, order: 1}}
+          config={{pageSize: 'size', pageNumber: 'page', size: 20}}
+          service={getTopList}
           convertData={res => res.booklist}
           renderItem={(item) => this._renderItem(item)}
         />
