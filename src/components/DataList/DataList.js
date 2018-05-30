@@ -25,6 +25,7 @@ export default class DataList extends React.Component {
       getStatus: PropTypes.func,
       disabledMountLoad: PropTypes.bool,
       disabledReceiveProps: PropTypes.bool,
+      noMoreLoading: PropTypes.bool,
       onEndReachedThreshold: PropTypes.number,
     }
 
@@ -45,6 +46,7 @@ export default class DataList extends React.Component {
       renderFooter: () => null,
       disabledMountLoad: false,
       disabledReceiveProps: false,
+      noMoreLoading: false,
       onEndReachedThreshold: 0.1,
     };
 
@@ -181,7 +183,8 @@ export default class DataList extends React.Component {
 
     onScroll(event) {
       const { loading, status, data } = this.state;
-      const { onEndReachedThreshold } = this.props;
+      const { onEndReachedThreshold, noMoreLoading } = this.props;
+      if (noMoreLoading) return;
       const { contentSize, contentOffset, layoutMeasurement } = event.nativeEvent;
       const loadMore = contentSize.height - contentOffset.y < layoutMeasurement.height + (contentSize.height * onEndReachedThreshold);
       // console.log(loadMore, reloadStatus.includes(status), loading);

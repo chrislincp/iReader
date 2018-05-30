@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Header } from '../';
+import { Header, ErrorPage } from '../';
+import LoadingStatus from '../LoadingStatus';
 
 class BasePage extends Component {
   constructor(props) {
@@ -17,6 +18,14 @@ class BasePage extends Component {
     return {};
   }
 
+  _renderError() {
+    return <ErrorPage />
+  }
+
+  _renderLoading() {
+    return <LoadingStatus />
+  }
+
   _render() {
     return null;
   }
@@ -26,7 +35,9 @@ class BasePage extends Component {
     return (
       <View style={[styles.container]}>
         {this._renderHeader()}
-        {this._render()}
+        {this.state.screenState === 'error' ? this._renderError() : null}
+        {this.state.screenState === 'loading' ? this._renderLoading() : null}
+        {this.state.screenState === 'success' || !this.state.screenState ? this._render() : null}
       </View>
     );
   }

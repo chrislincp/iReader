@@ -41,12 +41,14 @@ export default class Recommend extends BasePage {
     this.nav.push('BookDetail', {id});
   }
   goDetail(id) {
-    console.log(id);
+    this.nav.push('BookDetail', {id});
   }
+
   _render() {
     return (
       <View style={{backgroundColor: 'white', flex: 1}}>
         <DataList 
+          noMoreLoading
           options={{sex: 1}}
           service={getNewRecommend}
           convertData={res => res.booklist}

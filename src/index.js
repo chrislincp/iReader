@@ -4,6 +4,7 @@ import {
   Text
 } from 'react-native';
 import RootStack from './navigator';
+import NavigatorService from './navigator/navigatorServer';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,7 +15,11 @@ export default class App extends React.Component {
   render() {
     console.disableYellowBox = true;
     return (
-      <RootStack />
+      <RootStack
+        ref={(navigatorRef) => {
+          NavigatorService.setTopLevelNavigator(navigatorRef);
+        }} 
+        />
     )
   }
 }

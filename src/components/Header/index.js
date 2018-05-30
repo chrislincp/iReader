@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, StatusBar, Animated, Keyboard } from 'react-native';
 import { ifIphoneX, ifAndroid } from '../../utils/utils';
-import { withNavigation, NavigationActions } from 'react-navigation';
+import { withNavigation } from 'react-navigation';
 import Icon from '../Icon';
 import IconName from '../../constants/IconName';
 import Sizes from '../../themes/Sizes';
+import NavigatorService from '../../navigator/navigatorServer';
 
 class Header extends Component {
   static propTypes = {}
@@ -34,7 +35,7 @@ class Header extends Component {
         iconStyle={{ paddingLeft: 10, paddingRight: 10 }}
         onPress={leftPress || (() => {
           Keyboard.dismiss();
-          // NavigationActions.Back();
+          NavigatorService.goBack();
         })}
       />;
 
