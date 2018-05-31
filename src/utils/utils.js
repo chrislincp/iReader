@@ -40,3 +40,25 @@ export function ifAndroid(androidStyle, iphoneStyle) {
   }
   return iphoneStyle;
 }
+
+export function timeCompare(time) {
+  const compareTime = new Date(time).getTime();
+  const localTime = new Date().getTime();
+  const timeDiff = (localTime - compareTime) / 1000;
+  console.log(timeDiff)
+  let text = '';
+  if (timeDiff < 60) {
+    text = Math.floor(timeDiff) + '秒';
+  } else if ( timeDiff >= 60 && timeDiff < 3600) {
+    text = Math.floor(timeDiff / 60) + '分';
+  } else if (timeDiff >= 3600 && timeDiff < 86400) {
+    text = Math.floor(timeDiff / 3600) + '小时';
+  } else if (timeDiff >= 86400 && timeDiff < 2592000) {
+    text = Math.floor(timeDiff / 86400) + '天';
+  } else if (timeDiff >= 2592000 && timeDiff < 31536000) {
+    text = Math.floor(timeDiff / 2592000) + '月';
+  } else {
+    text = Math.floor(timeDiff / 31536000) + '年';
+  }
+  return text;
+}
