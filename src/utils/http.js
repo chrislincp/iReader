@@ -11,6 +11,7 @@ const httpFactory = method => async (url, params = {}) => {
       })
     } else if (method == 'Post') {
       axios.post(url, qs.stringify(params)).then(res => {
+        console.log(url, params);
         resove(res.data);
       }).catch(err => {
         reject(err);

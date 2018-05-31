@@ -5,4 +5,7 @@ export default {
   rightArrow: 'ios-arrow-forward',
   star: 'md-star',
   halfStar: 'md-star-half',
+  thumbsDown: 'ios-thumbs-down-outline',
+  thumbsUp: 'ios-thumbs-up-outline',
+  text: 'ios-text-outline',
 };

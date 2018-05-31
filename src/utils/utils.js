@@ -45,7 +45,6 @@ export function timeCompare(time) {
   const compareTime = new Date(time).getTime();
   const localTime = new Date().getTime();
   const timeDiff = (localTime - compareTime) / 1000;
-  console.log(timeDiff)
   let text = '';
   if (timeDiff < 60) {
     text = Math.floor(timeDiff) + '秒';
