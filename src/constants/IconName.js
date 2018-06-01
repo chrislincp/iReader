@@ -8,4 +8,7 @@ export default {
   thumbsDown: 'ios-thumbs-down-outline',
   thumbsUp: 'ios-thumbs-up-outline',
   text: 'ios-text-outline',
+  add: 'ios-add-outline',
+  chatbubbles: 'ios-chatbubbles-outline',
+  paper: 'ios-paper-outline',
 };

@@ -1,6 +1,7 @@
 import { StackNavigator, TabBarBottom, TabNavigator } from 'react-navigation';
 import { BookRack, Recommend, TopList,  BookList } from '../screen/tabs';
 import BookDetail from '../screen/bookDetail';
+import { AppColors } from '../themes';
 const Tab = TabNavigator(
   {
     BookRack: {screen: BookRack},
@@ -11,8 +12,8 @@ const Tab = TabNavigator(
   {
     tabBarOptions: {
       showIcon: true,
-      inactiveTintColor: '#B9C4CE',
-      activeTintColor: '#262A2F',
+      inactiveTintColor: '#262A2F',
+      activeTintColor: AppColors.themeColor,
       style: {
         backgroundColor: 'white',
       },

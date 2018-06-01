@@ -11,7 +11,7 @@ import { AppColors } from '../../themes';
 const Icons = ({
   name, size, color, style, iconStyle, onPress, text, textStyle
 }) => (
-  <TouchableOpacity style={[{flexDirection: 'row', justifyContent: 'center'}, style]} onPress={onPress} disabled={typeof onPress !== 'function'}>
+  <TouchableOpacity style={[{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, style]} onPress={onPress} disabled={typeof onPress !== 'function'}>
     <Icon name={name} size={size} color={color} style={iconStyle} />
     {text && <Text style={[{fontSize: 12, color: AppColors.textGreyColor, marginLeft: 5}, textStyle]}>{text}</Text>}
   </TouchableOpacity>

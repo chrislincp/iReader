@@ -7,6 +7,7 @@ import Icon from '../Icon';
 import IconName from '../../constants/IconName';
 import Sizes from '../../themes/Sizes';
 import NavigatorService from '../../navigator/navigatorServer';
+import { AppColors } from '../../themes';
 
 class Header extends Component {
   static propTypes = {}
@@ -32,6 +33,9 @@ class Header extends Component {
       <Icon
         name={IconName.back}
         size={26}
+        text="返回"
+        color="white"
+        textStyle={{fontSize: 14, color: 'white', marginLeft: 0}}
         iconStyle={{ paddingLeft: 10, paddingRight: 10 }}
         onPress={leftPress || (() => {
           Keyboard.dismiss();
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: ifAndroid(0, ifIphoneX(44, 20)),
-    backgroundColor: 'white',
+    backgroundColor: AppColors.themeColor,
     zIndex: 1,
   },
   left: {
@@ -84,7 +88,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: '#2F2F36',
+    color: 'white',
   },
   right: {
     flex: 1,

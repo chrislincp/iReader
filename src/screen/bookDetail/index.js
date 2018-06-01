@@ -1,5 +1,5 @@
 import React from 'react';
-import { BasePage, StarScore, Icon } from '../../components';
+import { BasePage, StarScore, Icon, Header } from '../../components';
 import {
   ScrollView,
   View,
@@ -24,6 +24,7 @@ export default class BookDetail extends BasePage {
       bookHotCommentList: [],
       noMoreDesc: true,
       showMoreDesc: false,
+      opacity: 0,
     }
   }
 
@@ -68,6 +69,12 @@ export default class BookDetail extends BasePage {
     })
   }
 
+  _headerProps() {
+    return {
+      title: '书籍详情',
+    }
+  }
+
   toggoleDesc() {
     LayoutAnimation.easeInEaseOut();
     this.setState({
@@ -89,15 +96,9 @@ export default class BookDetail extends BasePage {
     }
     
   }
-
-  _headerProps() {
-    return {
-      title: '书籍详情',
-    }
-  }
-
+  
   _render() {
-    const { bookInfo, bookSimilarList, bookHotCommentList, showMoreDesc, noMoreDesc } = this.state;
+    const { opacity, bookInfo, bookSimilarList, bookHotCommentList, showMoreDesc, noMoreDesc } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: AppColors.backgroundColor}}>
         <ScrollView style={{marginBottom: ifIphoneX(60, 40)}}>
@@ -109,7 +110,7 @@ export default class BookDetail extends BasePage {
               </View>
               <View style={styles.mainInfo}>
                 <Text style={styles.mainInfoText}>{`作者:${bookInfo.author} | ${bookInfo.sortname}`}</Text>
-                <Text style={styles.mainInfoText}>{`{状态：${bookInfo.bookprocess}`}</Text>
+                <Text style={styles.mainInfoText}>{`状态：${bookInfo.bookprocess}`}</Text>
                 <Text style={styles.mainInfoText}>{`时间:${bookInfo.updatetime}`}</Text>
                 <Text style={styles.mainInfoText} numberOfLines={1}>{`更新:${bookInfo.lastchaptername}`}</Text>
               </View>
@@ -153,11 +154,6 @@ export default class BookDetail extends BasePage {
           <View style={styles.bookHotCommentWrap}>
             <View style={styles.bookHotCommentHeader}>
               <Text>热门书评</Text>
-              <TouchableOpacity
-                onPress={() => console.log('more')}
-                >
-                <Text>更多</Text>
-              </TouchableOpacity>
             </View>
             <View style={styles.bookHotCommentList}>
               {bookHotCommentList.map((item, index) => {
@@ -169,7 +165,7 @@ export default class BookDetail extends BasePage {
                       justifyContent: 'center', 
                       padding: 10,
                       borderColor: AppColors.dividersColor, 
-                      borderBottomWidth: index + 1 == bookHotCommentList.length ? 0 : StyleSheet.hairlineWidth
+                      borderBottomWidth: StyleSheet.hairlineWidth
                       }}>
                     <View style={{width: 30, marginRight: 5}}>
                       <Image style={{width: 30, height: 30, borderRadius: 15}} source={{uri: item.userimage}} />
@@ -186,13 +182,17 @@ export default class BookDetail extends BasePage {
                           <Icon name={IconName.thumbsUp} size={16} text={item.flowercount + item.eggcount} />
                         </View>
                         <View>
-                          <Icon name={IconName.text} size={16} text={item.replycount}/>
+                          <Icon name={IconName.chatbubbles} size={16} text={item.replycount}/>
                         </View>
                       </View>
                     </View>
                   </TouchableOpacity>
                 )
               })}
+              <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 36}}>
+                <Text style={{fontSize: 12, color: AppColors.themeColor, marginRight: 5}}>查看更多</Text>
+                <Icon name={IconName.downArrow} color={AppColors.themeColor} size={16} />
+              </TouchableOpacity>
             </View>
           </View>}
           {bookSimilarList.length && 
@@ -226,25 +226,27 @@ export default class BookDetail extends BasePage {
         <View 
           style={{
             width: '100%', 
-            height: 40, 
+            height: 46, 
             backgroundColor: 'white',
             position: 'absolute', 
             bottom: 0, 
             left: 0, 
             marginBottom: ifIphoneX(20, 0),
             flexDirection: 'row',
+            borderColor: AppColors.dividersColor,
+            borderTopWidth: StyleSheet.hairlineWidth
           }}
           >
           <View 
             style={{
-              width: 100, 
+              flex: 1,
               height: '100%',
               justifyContent: 'center',
               alignItems: 'center',
               borderColor: AppColors.dividersColor,
               borderRightWidth: StyleSheet.hairlineWidth,
               }}>
-            <Text>加入书架</Text>
+            <Icon name={IconName.add} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="加入书架" />
           </View>
           <View 
             style={{
@@ -254,7 +256,7 @@ export default class BookDetail extends BasePage {
               alignItems: 'center',
               justifyContent: 'center',
               }}>
-            <Text style={{color: 'white'}}>立即阅读</Text>
+            <Icon color="white" name={IconName.paper} text="立即阅读" textStyle={{fontSize: 14, color: 'white'}} size={16} />
           </View>
           <View></View>
         </View>
