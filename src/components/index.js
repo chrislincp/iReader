@@ -5,6 +5,7 @@ import ErrorPage from './ErrorPage';
 import Icon from './Icon';
 import BookItem from './BookItem';
 import StarScore from './StarScore';
+import Tag from './Tag';
 export {
   BasePage,
   DataList,
@@ -13,4 +14,5 @@ export {
   Icon,
   BookItem,
   StarScore,
+  Tag,
 }
