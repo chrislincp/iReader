@@ -18,6 +18,7 @@ export default class StarScore extends React.Component {
     score: 0,
     total: 10,
     color: 'rgb(247, 186, 42)',
+    emptyColor: 'rgb(239, 242, 247)',
   }
 
   constructor(props) {
@@ -32,17 +33,26 @@ export default class StarScore extends React.Component {
 
   render() {
     const {fullNum, hasHalf} = this.state;
-    const {score, color} = this.props;
-    let arr = [];
+    const emptyNum = hasHalf ? (5 - (fullNum + 1)) : 5 - fullNum;
+    console.log(fullNum, hasHalf, emptyNum);
+    const {score, color, emptyColor} = this.props;
+    let fullArr = [];
+    let emptyArr = [];
     for (let i = 0; i < fullNum; i++) {
-      arr.push(i);
+      fullArr.push(i);
+    }
+    for (let i = 0; i < emptyNum; i++) {
+      emptyArr.push(i);
     }
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        {fullNum && arr.map((item, i) => (
+        {fullNum && fullArr.map((item, i) => (
           <Icon size={20} color={color} style={{marginRight: 5}} key={i} name={IconName.star} />
         ))}
         {hasHalf && <Icon size={20} color={color} style={{marginRight: 5}} name={IconName.halfStar} />}
+        {emptyArr && emptyArr.map((item, i) => (
+          <Icon size={20} color={emptyColor} style={{marginRight: 5}} key={i} name={IconName.star} />
+        ))}
         <Text style={{fontSize: 16, color,}}>{score}</Text>
       </View>
     )
