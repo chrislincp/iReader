@@ -49,7 +49,6 @@ export default class Tag extends React.Component {
         color = AppColors.themeColor;
         break;
     }
-    // console.log(props.type, color);
     this.state = {
       color,
     }
@@ -77,11 +76,11 @@ export default class Tag extends React.Component {
     )
   }
 }
+
 const styles = StyleSheet.create({
   tagContent: {
     borderRadius: 5,
     borderWidth: StyleSheet.hairlineWidth,
-    // borderColor: '#e5e5e5',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -92,6 +91,5 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 3,
     fontSize: 11,
-    // color: '#969FA9',
-  },
+  }
 });

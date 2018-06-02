@@ -1,9 +1,7 @@
 const app = {
-  red: '#FF3366',
-  blue: '#448AFF',
-  yellow: '#FFC800',
-  green: '#53F05E',
-  white: '#fff',
+  success: '#67C23A',
+  warning: '#F7BA2A',
+  danger: '#F56C6C',
   ColdGray: '#EFEFF4',
   darkGray: '#D1D1D6',
   lightGray: '#E5E5EA',
@@ -16,8 +14,7 @@ const app = {
 const text = {
   textThemeColor: '#FF3366',
   textNormalColor: '#111111',
-  textSubColor: '#474646',
-  textLightColor: '#C7C7CC',
+  textTabInitColor: '#B9C4CE',
   textGreyColor: '#888',
 };
 

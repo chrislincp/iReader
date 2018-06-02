@@ -1,5 +1,13 @@
 import {Get, Post} from '../../utils/http';
 
+export const getRecommend = (opt) => {
+  const url = 'http://api.aixuansm.com/book/get_commend_book';
+  return Post(url, opt);
+}
+export const getClassic = (opt) => {
+  const url = 'http://api.aixuansm.com/book/get_classic_book';
+  return Post(url, opt);
+}
 export const getNewRecommend = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_recently_good_book_list';
   return Post(url, opt);

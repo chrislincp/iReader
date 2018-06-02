@@ -1,18 +1,21 @@
 import { StackNavigator, TabBarBottom, TabNavigator } from 'react-navigation';
-import { BookRack, Recommend, TopList,  BookList } from '../screen/tabs';
+import { BookRack, Recommend, Top,  BookList, Mine } from '../screen/tabs';
 import BookDetail from '../screen/bookDetail';
+import TopList from '../screen/TopList';
+
 import { AppColors } from '../themes';
 const Tab = TabNavigator(
   {
     BookRack: {screen: BookRack},
     Recommend: {screen: Recommend},
-    TopList: {screen: TopList},
-    BookList: {screen: BookList},
+    Top: {screen: Top},
+    // BookList: {screen: BookList},
+    Mine: {screen: Mine},
   },
   {
     tabBarOptions: {
       showIcon: true,
-      inactiveTintColor: '#262A2F',
+      inactiveTintColor: AppColors.textTabInitColor,
       activeTintColor: AppColors.themeColor,
       style: {
         backgroundColor: 'white',
@@ -30,6 +33,7 @@ const RootStack = StackNavigator(
   {
     Tab: { screen: Tab },
     BookDetail: {screen: BookDetail},
+    TopList: {screen: TopList},
   },
   {
     headerMode: 'none',

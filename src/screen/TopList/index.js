@@ -6,32 +6,27 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage } from '../../components';
-import {getTopList, getBookDetail} from './index.service';
+import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
+import {getTopList} from './index.service';
+import IconName from '../../constants/IconName';
+import { AppColors } from '../../themes';
 
 export default class TopList extends BasePage {
-  static navigationOptions = {
-    tabBarLabel: '排行榜',
-    // tabBarIcon: ({ focused }) => (
-    //   <Image
-    //     style={{ width: 24, height: 24 }}
-    //     source={
-    //       focused
-    //         ? require('../../images/tabHouseActive.png')
-    //         : require('../../images/tabHouseInactive.png')
-    //     }
-    //   />
-    // ),
-  };
   constructor(props) {
     super(props);
-    this.state = {};
+    console.log(props)
+    this.state = {
+      options: {
+        sex: 1,
+        order: this.nav.state.params.order,
+      }
+    };
   }
 
   _headerProps() {
+    const {title} = this.nav.state.params;
     return {
-      title: '排行榜',
-      left: <View />,
+      title,
     }
   }
 
@@ -44,7 +39,7 @@ export default class TopList extends BasePage {
     return (
       <View style={{backgroundColor: 'white', flex: 1}}>
         <DataList 
-          options={{sex: 1, order: 1}}
+          options={this.state.options}
           config={{pageSize: 'size', pageNumber: 'page', size: 20}}
           service={getTopList}
           convertData={res => res.booklist}

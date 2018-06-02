@@ -6,8 +6,9 @@ import {
   View,
   Text,
 } from 'react-native';
+import { AppColors } from '../../themes';
 
-export default class StarScore extends React.Component {
+export default class StarRate extends React.Component {
   static proptypes = {
     score: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     total: PropTypes.number.isRequired,
@@ -17,7 +18,7 @@ export default class StarScore extends React.Component {
   static defaultProps = {
     score: 0,
     total: 10,
-    color: 'rgb(247, 186, 42)',
+    color: AppColors.warning,
     emptyColor: 'rgb(239, 242, 247)',
   }
 
@@ -34,7 +35,6 @@ export default class StarScore extends React.Component {
   render() {
     const {fullNum, hasHalf} = this.state;
     const emptyNum = hasHalf ? (5 - (fullNum + 1)) : 5 - fullNum;
-    console.log(fullNum, hasHalf, emptyNum);
     const {score, color, emptyColor} = this.props;
     let fullArr = [];
     let emptyArr = [];

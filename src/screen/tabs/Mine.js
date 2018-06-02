@@ -8,9 +8,9 @@ import IconName from '../../constants/IconName';
 import { AppColors } from '../../themes';
 export default class BookRack extends BasePage {
   static navigationOptions = {
-    tabBarLabel: '书架',
+    tabBarLabel: '我的',
     tabBarIcon: ({ focused }) => (
-      <Icon name={IconName.book} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor}/>
+      <Icon name={IconName.person} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor}/>
     ),
   };
   constructor(props) {
@@ -20,14 +20,14 @@ export default class BookRack extends BasePage {
 
   _headerProps() {
     return {
-      title: '书架',
+      title: '我的',
       left: <View />,
     }
   }
 
   _render() {
     return (
-      <Text>this is BookRack</Text>
+      <Text>我的</Text>
     )
   }
 }

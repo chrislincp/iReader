@@ -4,7 +4,7 @@ import Header from './Header';
 import ErrorPage from './ErrorPage';
 import Icon from './Icon';
 import BookItem from './BookItem';
-import StarScore from './StarScore';
+import StarRate from './StarRate';
 import Tag from './Tag';
 export {
   BasePage,
@@ -13,6 +13,6 @@ export {
   ErrorPage,
   Icon,
   BookItem,
-  StarScore,
+  StarRate,
   Tag,
 }

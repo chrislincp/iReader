@@ -1,79 +1,119 @@
 import React from 'react';
 import {
   TouchableOpacity,
+  ScrollView,
   View,
   Image,
   Text,
   StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage } from '../../components';
-import {getNewRecommend, getBookDetail} from './index.service';
+import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
+import {getClassic, getRecommend} from './index.service';
+import IconName from '../../constants/IconName';
+import { AppColors } from '../../themes';
 
 export default class Recommend extends BasePage {
   static navigationOptions = {
-    tabBarLabel: '最新推荐',
-    // tabBarIcon: ({ focused }) => (
-    //   <Image
-    //     style={{ width: 24, height: 24 }}
-    //     source={
-    //       focused
-    //         ? require('../../images/tabHouseActive.png')
-    //         : require('../../images/tabHouseInactive.png')
-    //     }
-    //   />
-    // ),
+    tabBarLabel: '推荐',
+    tabBarIcon: ({ focused }) => (
+      <Icon name={IconName.ribbon} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor} />
+    ),
   };
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      screenState: 'loading',
+      hotList: [],
+      commendList: [],
+    };
+  }
+
+  componentDidMount() {
+    Promise.all([
+      getClassic({sex: 1}),
+      getRecommend({sex: 1})
+    ]).then(res => {
+      console.log('recommend res', res);
+      if (res[0].success == 1) {
+        this.setState({
+          hotList: res[0].booklist,
+        })
+      }
+      if (res[1].success == 1) {
+        this.setState({
+          commendList: res[1].booklist
+        })
+      }
+      this.setState({
+        screenState: 'success'
+      })
+    }).catch(err => {
+      this.setState({
+        screenState: 'error'
+      })
+    })
   }
 
   _headerProps() {
     return {
-      title: '最新推荐',
+      title: '精选',
       left: <View />,
     }
   }
+
 
   _renderItem = item => <BookItem item={item} onPress={id => this.goDetail(id)} />
 
   goDetail(id) {
     this.nav.push('BookDetail', {id});
   }
-  goDetail(id) {
-    this.nav.push('BookDetail', {id});
-  }
 
   _render() {
+    const {hotList, commendList} = this.state;
     return (
-      <View style={{backgroundColor: 'white', flex: 1}}>
-        <DataList 
-          noMoreLoading
-          options={{sex: 1}}
-          service={getNewRecommend}
-          convertData={res => res.booklist}
-          renderItem={(item) => this._renderItem(item)}
-        />
-      </View>
+      <ScrollView style={{backgroundColor: AppColors.backgroundColor, flex: 1}}>
+        <View style={{ backgroundColor: 'white'}}>
+          <View style={{height: 100, borderColor: AppColors.dividersColor, borderBottomWidth: StyleSheet.hairlineWidth}} />
+          <View 
+            style={{
+              flexDirection: 'row', 
+              justifyContent: 'space-between', 
+              borderLeftWidth: 4, 
+              borderColor: AppColors.themeColor, 
+              height: 24,
+              padding: 10,
+              marginTop: 10,
+              }}>
+              <Text style={{alignSelf: 'center', marginLeft: 10}}>畅销精选</Text>
+            <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Text style={{alignSelf: 'center', marginRight: 5, color: AppColors.textGreyColor}}>更多</Text>
+              <Icon name={IconName.rightArrow} color={AppColors.textGreyColor} size={20} />
+            </TouchableOpacity>
+          </View>
+          {hotList.map(item => <BookItem key={item.bookid} item={item} onPress={() => this.goDetail(item.bookid)} />)}
+          <View 
+            style={{
+              flexDirection: 'row', 
+              justifyContent: 'space-between', 
+              borderLeftWidth: 4, 
+              borderColor: AppColors.themeColor, 
+              height: 24,
+              marginTop: 10,
+              padding: 10,
+              }}>
+              <Text style={{alignSelf: 'center', marginLeft: 10}}>主编力荐</Text>
+            <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Text style={{alignSelf: 'center', marginRight: 5, color: AppColors.textGreyColor}}>更多</Text>
+              <Icon name={IconName.rightArrow} color={AppColors.textGreyColor} size={20} />
+            </TouchableOpacity>
+          </View>
+          {commendList.map(item => <BookItem key={item.bookid} item={item} onPress={() => this.goDetail(item.bookid)} />)}
+        </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  itemWrap: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
-  },
-  cover: {
-    width: 60,
-    height: 75,
-    marginRight: 5,
-  },
-  desc: {
-    fontSize: 12,
-    color: '#888',
-  }
+
 })

@@ -1,11 +1,12 @@
 import BookRack from './BookRack';
 import Recommend from './Recommend';
-import TopList from './TopList';
+import Top from './Top';
 import BookList from './BookList';
-
+import Mine from './Mine';
 export {
   BookRack,
   Recommend,
-  TopList,
+  Top,
   BookList,
+  Mine,
 };
