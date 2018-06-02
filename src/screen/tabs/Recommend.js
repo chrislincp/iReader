@@ -81,8 +81,8 @@ export default class Recommend extends BasePage {
               borderLeftWidth: 4, 
               borderColor: AppColors.themeColor, 
               height: 24,
-              padding: 10,
-              marginTop: 10,
+              margin: 10,
+              marginBottom: 10,
               }}>
               <Text style={{alignSelf: 'center', marginLeft: 10}}>畅销精选</Text>
             <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -98,8 +98,8 @@ export default class Recommend extends BasePage {
               borderLeftWidth: 4, 
               borderColor: AppColors.themeColor, 
               height: 24,
-              marginTop: 10,
-              padding: 10,
+              margin: 10,
+              marginBottom: 0,
               }}>
               <Text style={{alignSelf: 'center', marginLeft: 10}}>主编力荐</Text>
             <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center'}}>

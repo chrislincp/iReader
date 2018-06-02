@@ -3,6 +3,10 @@ export default {
   topArrow: 'ios-arrow-up',
   downArrow: 'ios-arrow-down',
   rightArrow: 'ios-arrow-forward',
+  downRoundArrow: 'md-arrow-round-down',
+  topRoundArrow: 'md-arrow-round-up',
+  arrowDropDown: 'ios-arrow-dropdown',
+  arrowDropUp: 'ios-arrow-dropup',
   star: 'md-star',
   halfStar: 'md-star-half',
   thumbsDown: 'ios-thumbs-down-outline',
@@ -24,4 +28,5 @@ export default {
   flameOutline: 'ios-flame-outline',
   leaf: 'ios-leaf',
   mdLeaf: 'md-leaf',
+  list: 'ios-list',
 };

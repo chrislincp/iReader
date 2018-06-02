@@ -68,7 +68,7 @@ class Header extends Component {
 const styles = StyleSheet.create({
   container: {
     width: Sizes.screenWidth,
-    height: ifAndroid(44, ifIphoneX(88, 64)),
+    height: ifIphoneX(88, 64),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

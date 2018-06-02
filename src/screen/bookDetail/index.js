@@ -11,7 +11,7 @@ import {
   Animated,
 } from 'react-native';
 import LoadingStatus from '../../components/LoadingStatus';
-import { getBookDetail, getBookHotComment, getSimiarBook } from './index.service';
+import { getBookDetail, getBookHotComment, getSimiarBook, getBookDir } from './index.service';
 import { AppColors } from '../../themes';
 import IconName from '../../constants/IconName';
 import { timeCompare, ifIphoneX } from '../../utils/utils';
@@ -270,28 +270,36 @@ export default class BookDetail extends BasePage {
             borderTopWidth: StyleSheet.hairlineWidth
           }}
           >
-          <View 
+          <TouchableOpacity 
+            onPress={() => this.nav.push('BookDir', bookInfo)}
             style={{
-              flex: 1,
-              height: '100%',
+              width: '30%',
               justifyContent: 'center',
               alignItems: 'center',
               borderColor: AppColors.dividersColor,
               borderRightWidth: StyleSheet.hairlineWidth,
               }}>
-            <Icon name={IconName.add} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="加入书架" />
-          </View>
-          <View 
+            <Icon name={IconName.list} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="目录" />
+          </TouchableOpacity>
+          <TouchableOpacity 
             style={{
-              flex: 1, 
-              height: '100%', 
+              flex: 1,
               backgroundColor: AppColors.themeColor, 
               alignItems: 'center',
               justifyContent: 'center',
               }}>
-            <Icon color="white" name={IconName.paper} text="立即阅读" textStyle={{fontSize: 14, color: 'white'}} size={16} />
-          </View>
-          <View></View>
+            <Icon color="white" text="立即阅读" textStyle={{fontSize: 14, color: 'white'}} size={16} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={{
+              width: '30%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderColor: AppColors.dividersColor,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              }}>
+            <Icon name={IconName.add} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="加书架" />
+          </TouchableOpacity>
         </View>
       </View>
     )
