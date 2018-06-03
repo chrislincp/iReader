@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
-import {getTopList} from './index.service';
+import {getTopList, getOtherList} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors } from '../../themes';
 
@@ -18,9 +18,20 @@ export default class TopList extends BasePage {
     this.state = {
       options: {
         sex: 1,
-        order: this.nav.state.params.order,
-      }
+      },
+      isOther: this.nav.state.params.isOther ? true : false,
     };
+  }
+
+  componentDidMount() {
+    const {title, options} = this.nav.state.params;
+    let opt = Object.assign({}, this.state.options, options);
+    this.setState({
+      options: opt,
+    })
+    setTimeout(() => {
+      this.refs.datalist.reload(); 
+    });
   }
 
   _headerProps() {
@@ -36,14 +47,18 @@ export default class TopList extends BasePage {
     this.nav.push('BookDetail', {id});
   }
   _render() {
+    const {isOther} = this.state;
     return (
       <View style={{backgroundColor: 'white', flex: 1}}>
         <DataList 
+          ref="datalist"
           options={this.state.options}
           config={{pageSize: 'size', pageNumber: 'page', size: 20}}
-          service={getTopList}
+          service={isOther ? getOtherList : getTopList}
           convertData={res => res.booklist}
           renderItem={(item) => this._renderItem(item)}
+          disabledMountLoad
+          disabledReceiveProps
         />
       </View>
     )
@@ -63,8 +78,4 @@ const styles = StyleSheet.create({
     height: 75,
     marginRight: 5,
   },
-  desc: {
-    fontSize: 12,
-    color: '#888',
-  }
 })
