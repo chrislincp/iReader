@@ -18,6 +18,7 @@ export default class DataList extends React.Component {
       renderItem: PropTypes.func.isRequired,
       renderEmpty: PropTypes.func,
       renderError: PropTypes.func,
+      renderHeader: PropTypes.func,
       renderNetError: PropTypes.func,
       renderSeparator: PropTypes.func,
       renderFooter: PropTypes.func,
@@ -33,13 +34,14 @@ export default class DataList extends React.Component {
       options: {},
       style: {},
       config: {
-        pageNumber: 'pageNumber',
-        pageSize: 'pageSize',
+        pageNumber: 'page',
+        pageSize: 'size',
         size: 10,
       },
       convertData: val => val,
       getStatus: () => {},
       renderEmpty: () => null,
+      renderHeader: () => null,
       renderError: () => null,
       renderNetError: () => null,
       renderSeparator: () => null,
@@ -163,6 +165,7 @@ export default class DataList extends React.Component {
       const params = Object.assign({}, options, pages);
       service(params).then((val) => {
         const res = convertData ? convertData(val) : val;
+        console.log(res);
         this.setState({
           data: data.concat(res),
           pageNumber: res.length == pageSize ? pageNumber + 1 : pageNumber,
@@ -239,12 +242,13 @@ export default class DataList extends React.Component {
 
     render() {
       const {
-        renderItem, style,
+        renderItem, style, renderHeader,
       } = this.props;
       const { data, status } = this.state;
       const emptyStatus = ['empty', 'net_error', 'error'];
       return (
-        !data.length ? emptyStatus.includes(status) ? this._renderEmpty() : <LoadingStatus /> :
+        // !data.length ? emptyStatus.includes(status) ? this._renderEmpty() : <LoadingStatus /> :
+        status == 'begin' ? <LoadingStatus /> :
         <FlatList
           keyboardDismissMode="on-drag"
           onScroll={event => this.onScroll(event)}
@@ -254,6 +258,7 @@ export default class DataList extends React.Component {
           refreshing={this.state.isRefresh}
           keyExtractor={(item, index) => index.toString()}
           onRefresh={() => this.onRefresh()}
+          ListHeaderComponent={renderHeader()}
           // onEndReached={() => this.onLoading()}
           // onEndReachedThreshold={this.state.onEndReachedThreshold}
           renderItem={({ item }) => renderItem(item)}
