@@ -1,15 +1,15 @@
 import { StackNavigator, TabBarBottom, TabNavigator } from 'react-navigation';
-import { BookRack, Recommend, Top,  BookList, Mine } from '../screen/tabs';
+import { BookRack, Recommend, Top, Mine } from '../screen/tabs';
 import BookDetail from '../screen/bookDetail';
-import TopList from '../screen/TopList';
+import BookList from '../screen/BookList';
 import BookDir from '../screen/bookDir';
 import { AppColors } from '../themes';
+import { Comments, DetailComment } from '../screen/bookComments';
 const Tab = TabNavigator(
   {
     BookRack: {screen: BookRack},
     Recommend: {screen: Recommend},
     Top: {screen: Top},
-    // BookList: {screen: BookList},
     Mine: {screen: Mine},
   },
   {
@@ -33,8 +33,10 @@ const RootStack = StackNavigator(
   {
     Tab: { screen: Tab },
     BookDetail: {screen: BookDetail},
-    TopList: {screen: TopList},
+    BookList: {screen: BookList},
     BookDir: {screen: BookDir},
+    Comments: {screen: Comments},
+    DetailComment: {screen: DetailComment},
   },
   {
     headerMode: 'none',

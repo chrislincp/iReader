@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { DataList, BasePage } from '../../components';
 import { getBookList } from './index.service';
+import { AppStyles } from '../../themes';
 export default class BookList extends BasePage {
   static navigationOptions = {
     tabBarLabel: '主题书单',
@@ -51,11 +52,11 @@ export default class BookList extends BasePage {
           <Text>{item.title}</Text>
           <View style={{flex: 1, flexDirection: 'column'}}>
           <View style={{justifyContent: 'center', flex: 1}}>
-            <Text style={[styles.text, {lineHeight: 16}]}>{item.nickname}</Text>
-            <Text style={[styles.text, {lineHeight: 16}]}>{item.description}</Text>
+            <Text style={AppStyles.smallText}>{item.nickname}</Text>
+            <Text style={AppStyles.smallText}>{item.description}</Text>
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-            <Text style={[styles.text, {alignItems: 'flex-end'}]}>{`共${item.bookcount}本 | ${item.collectcount}人收藏`}</Text>
+            <Text style={[AppStyles.smallText, {alignItems: 'flex-end'}]}>{`共${item.bookcount}本 | ${item.collectcount}人收藏`}</Text>
           </View>
         </View>
         </View>
@@ -67,7 +68,6 @@ export default class BookList extends BasePage {
     return (
       <DataList 
         service={getBookList}
-        config={{pageNumber: 'page', pageSize: 'size', size: 20,}}
         convertData={res => res.booklistlist}
         renderItem={item => this._renderItem(item)}
         />
@@ -88,8 +88,4 @@ const styles = StyleSheet.create({
     height: 75,
     marginRight: 5,
   },
-  text: {
-    fontSize: 12,
-    color: '#888',
-  }
 })

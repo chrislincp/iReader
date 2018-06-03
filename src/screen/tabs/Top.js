@@ -9,7 +9,7 @@ import {
   LayoutAnimation
 } from 'react-native';
 import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
-import {getTopList, getBookDetail} from './index.service';
+import {getTopList, getOtherList, getBookDetail} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppStyles } from '../../themes';
 
@@ -70,7 +70,7 @@ export default class Top extends BasePage {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 backgroundColor: 'white',
               }}
-              onPress={() => this.nav.push('TopList', {title: item.title, options: {order: item.order}})}
+              onPress={() => this.nav.push('BookList', {title: item.title, service: getTopList,  options: {order: item.order}})}
               >
               <View 
                 style={{
@@ -93,6 +93,8 @@ export default class Top extends BasePage {
               alignItems: 'center',
               height: 48,
               backgroundColor: 'white',
+              borderColor: AppColors.dividersColor,
+              borderBottomWidth: StyleSheet.hairlineWidth,
             }}
             onPress={() => this.toggleMore()}
             >
@@ -126,7 +128,7 @@ export default class Top extends BasePage {
                   borderColor: AppColors.dividersColor,
                   borderBottomWidth: otherTop.length == index + 1 ? 0 : StyleSheet.hairlineWidth,
                 }}
-                onPress={() => this.nav.push('TopList', {title: item.title, isOther: true, options: {topid: item.topid}})}
+                onPress={() => this.nav.push('BookList', {title: item.title, service: getOtherList,  options: {topid: item.topid}})}
                 >
                 <Text style={AppStyles.smallText}>{item.title}</Text>
               </TouchableOpacity>
