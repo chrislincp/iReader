@@ -7,6 +7,12 @@ export default {
     backgroundColor: Colors.white,
   },
 
+  smallText: {
+    color: Colors.textGreyColor,
+    fontSize: 12,
+    lineHeight: 16,
+  },
+
   // Default
   container: {
     position: 'relative',

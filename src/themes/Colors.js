@@ -2,6 +2,7 @@ const app = {
   success: '#67C23A',
   warning: '#F7BA2A',
   danger: '#F56C6C',
+  lightBlue: '#58B7FF',
   ColdGray: '#EFEFF4',
   darkGray: '#D1D1D6',
   lightGray: '#E5E5EA',
