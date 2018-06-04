@@ -6,14 +6,14 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, Text } from 'react-native';
-import { AppColors } from '../../themes';
+import { AppColors, AppStyles } from '../../themes';
 
 const Icons = ({
   name, size, color, style, iconStyle, onPress, text, textStyle
 }) => (
   <TouchableOpacity style={[{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, style]} onPress={onPress} disabled={typeof onPress !== 'function'}>
     <Icon name={name} size={size} color={color} style={iconStyle} />
-    {text && <Text style={[{fontSize: 12, color: AppColors.textGreyColor, marginLeft: 5}, textStyle]}>{text}</Text>}
+    {text && <Text style={[AppStyles.smallText, {marginLeft: 5}, textStyle]}>{text}</Text>}
   </TouchableOpacity>
 );
 

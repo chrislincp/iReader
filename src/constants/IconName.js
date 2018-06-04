@@ -29,4 +29,5 @@ export default {
   leaf: 'ios-leaf',
   mdLeaf: 'md-leaf',
   list: 'ios-list',
+  more: 'ios-more',
 };

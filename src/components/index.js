@@ -7,6 +7,7 @@ import BookItem from './BookItem';
 import CommentItem from './CommentItem';
 import StarRate from './StarRate';
 import Tag from './Tag';
+import ScrollableTabView from './ScrollableTabView';
 export {
   BasePage,
   DataList,
@@ -17,4 +18,5 @@ export {
   StarRate,
   Tag,
   CommentItem,
+  ScrollableTabView,
 }
