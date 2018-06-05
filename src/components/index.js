@@ -8,6 +8,8 @@ import CommentItem from './CommentItem';
 import StarRate from './StarRate';
 import Tag from './Tag';
 import ScrollableTabView from './ScrollableTabView';
+import TitleBar from './TitleBar';
+
 export {
   BasePage,
   DataList,
@@ -19,4 +21,5 @@ export {
   Tag,
   CommentItem,
   ScrollableTabView,
+  TitleBar,
 }
