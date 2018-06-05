@@ -10,6 +10,11 @@ export const getRecommendList = (opt) => {
   return Post(url, opt);
 }
 
+export const getBookSort = (opt) => {
+  const url = 'http://api.aixuansm.com/book/get_book_sort';
+  return Post(url, opt);
+}
+
 export const getClassic = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_classic_book';
   return Post(url, opt);
@@ -24,6 +29,13 @@ export const getNewRecommend = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_recently_good_book_list';
   return Post(url, opt);
 }
+
+export const getBookListBySort = (opt) => {
+  const url = 'http://api.aixuansm.com/book/get_book_list_by_sort';
+  return Post(url, opt);
+}
+
+
 export const getBookDetail = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_book_info';
   return Post(url, opt);
@@ -38,6 +50,12 @@ export const getTopList = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_book_top_list';
   return Post(url, opt);
 }
+
+export const getOtherName = (opt) => {
+  const url = 'http://api.aixuansm.com/book/get_book_top_other_name';
+  return Post(url, opt);
+}
+
 export const getOtherList = (opt) => {
   const url = 'http://api.aixuansm.com/book/get_book_top_other_list';
   return Post(url, opt);
