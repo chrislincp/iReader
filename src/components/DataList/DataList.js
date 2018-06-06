@@ -88,6 +88,7 @@ export default class DataList extends React.Component {
       // console.log(options, nextPropsOpt, change);
       if (change) {
         this.setState({
+          status: 'begin',
           options: Object.assign({}, nextPropsOpt),
         });
         this.props = nextProps;
@@ -220,6 +221,7 @@ export default class DataList extends React.Component {
         if (res.length) this._ref.scrollToOffset({ animated: false, offset: 0 });
         getStatus('first', val, !!this.state.data.length);
       }).catch((err) => {
+        console.log(err);
         this.setState({
           status: this.state.netErrorRes.includes(err) ? 'net_error' : 'error', //  判断是网络错误还是请求报错
           isRefresh: false,
@@ -248,7 +250,7 @@ export default class DataList extends React.Component {
       const emptyStatus = ['empty', 'net_error', 'error'];
       return (
         // !data.length ? emptyStatus.includes(status) ? this._renderEmpty() : <LoadingStatus /> :
-        status == 'begin' ? <LoadingStatus /> :
+        status == 'begin' ? <LoadingStatus /> : !data.length && emptyStatus.includes(status) ? this._renderEmpty() :
         <FlatList
           keyboardDismissMode="on-drag"
           onScroll={event => this.onScroll(event)}
