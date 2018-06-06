@@ -9,6 +9,7 @@ import StarRate from './StarRate';
 import Tag from './Tag';
 import ScrollableTabView from './ScrollableTabView';
 import TitleBar from './TitleBar';
+import CollectItem from './CollectItem';
 
 export {
   BasePage,
@@ -22,4 +23,5 @@ export {
   CommentItem,
   ScrollableTabView,
   TitleBar,
+  CollectItem,  
 }
