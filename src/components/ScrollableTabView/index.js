@@ -45,7 +45,7 @@ export default class ScrollTabView extends React.Component {
           />
         )}
         >
-        {children.map(child => React.cloneElement(child, { style: contentStyle }))}
+        {children.map((child, index) => React.cloneElement(child, { style: contentStyle, key: index }))}
       </ScrollableTabView>
     )
   }

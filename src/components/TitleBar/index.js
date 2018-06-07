@@ -36,6 +36,7 @@ export default class TitleBar extends React.Component {
           borderBottomWidth: AppSizes.hairLineWidth,
           borderColor: AppColors.dividersColor,
         }, style]}
+        disabled={typeof onPress !== 'function'}
         onPress={() => onPress()}
         >
         <View

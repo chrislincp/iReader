@@ -250,7 +250,7 @@ export default class DataList extends React.Component {
       const emptyStatus = ['empty', 'net_error', 'error'];
       return (
         // !data.length ? emptyStatus.includes(status) ? this._renderEmpty() : <LoadingStatus /> :
-        status == 'begin' ? <LoadingStatus /> : !data.length && emptyStatus.includes(status) ? this._renderEmpty() :
+        status == 'begin' ? <LoadingStatus /> : !data.length && emptyStatus.includes(status) && !renderHeader ? this._renderEmpty() :
         <FlatList
           keyboardDismissMode="on-drag"
           onScroll={event => this.onScroll(event)}

@@ -43,7 +43,7 @@ class Header extends Component {
         })}
       />;
 
-    const centerComponent = typeof this.props.title == 'string' ? <Text style={styles.title}>{title}</Text> : title;
+    const centerComponent = typeof this.props.title == 'string' ? <Text numberOfLines={1} style={styles.title}>{title}</Text> : title;
 
     const rightComponent = right || null;
 

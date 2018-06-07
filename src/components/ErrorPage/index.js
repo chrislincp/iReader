@@ -6,6 +6,7 @@ import {
   Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { AppColors } from '../../themes';
 // import { ifAndroid } from '../util/Utils';
 // import { ifIphoneX } from '../../utils/utils';
 
@@ -47,7 +48,7 @@ export default class ErrorPage extends React.Component {
             <Image style={{ width: 118, height: 118 }} source={source} />
             <Text style={{
               textAlign: 'center',
-              color: '#A1A1A4',
+              color: AppColors.themeColor,
               fontSize: 13,
               lineHeight: 18,
             }}
@@ -57,7 +58,7 @@ export default class ErrorPage extends React.Component {
             {!noButton ?
               <TouchableOpacity
                 style={{
-                borderColor: 'red',
+                borderColor: AppColors.themeColor,
                 borderWidth: 1,
                 borderRadius: 2,
                 width: 100,
@@ -68,7 +69,7 @@ export default class ErrorPage extends React.Component {
               }}
                 onPress={() => onPress()}
               >
-                <Text style={{ fontSize: 13 }}>{buttonText}</Text>
+                <Text style={{ fontSize: 13, color: AppColors.themeColor }}>{buttonText}</Text>
               </TouchableOpacity>
             : null}
           </View>

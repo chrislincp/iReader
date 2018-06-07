@@ -30,13 +30,13 @@ export default class BookItem extends React.Component {
           borderBottomWidth: StyleSheet.hairlineWidth,
           backgroundColor: 'white'
           }}>
-          <View style={{width: 30, marginRight: 5}}>
-            <Image style={{width: 30, height: 30, borderRadius: 15}} source={{uri: item.userimage}} />
+          <View style={{ marginRight: 5}}>
+            <Image style={AppStyles.avatar} source={{uri: item.userimage}} />
           </View>
           <View style={{flex: 1}}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{fontSize: 12}}>{item.nickname}</Text>
-              <Text style={{fontSize: 12, color: AppColors.textGreyColor}}>{`${timeCompare(item.posttime)}前更新`}</Text>
+              <Text style={AppStyles.smallText}>{`${timeCompare(item.posttime)}前更新`}</Text>
             </View>
             <Text style={{fontSize: 16, lineHeight: 20}}>{item.title}</Text>
             <Text style={AppStyles.smallText}>{item.content}</Text>
