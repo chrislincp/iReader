@@ -1,8 +1,9 @@
 import { StackNavigator, TabBarBottom, TabNavigator } from 'react-navigation';
 import { BookRack, BookMall, Top, Mine } from '../screen/tabs';
 import BookDetail from '../screen/bookDetail';
-import BookList from '../screen/BookList';
+import BookList from '../screen/bookList';
 import BookDir from '../screen/bookDir';
+import BookSortList from '../screen/bookSortList';
 import { CollectList, CollectDetail } from '../screen/collectList';
 import { Comments, DetailComment } from '../screen/bookComments';
 import { AppColors } from '../themes';
@@ -40,6 +41,7 @@ const RootStack = StackNavigator(
     DetailComment: {screen: DetailComment},
     CollectList: {screen: CollectList},
     CollectDetail: {screen: CollectDetail},
+    BookSortList: {screen: BookSortList},
   },
   {
     headerMode: 'none',
