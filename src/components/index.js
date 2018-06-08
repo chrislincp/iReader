@@ -10,7 +10,7 @@ import Tag from './Tag';
 import ScrollableTabView from './ScrollableTabView';
 import TitleBar from './TitleBar';
 import CollectItem from './CollectItem';
-
+import Input from './Input';
 export {
   BasePage,
   DataList,
@@ -24,4 +24,5 @@ export {
   ScrollableTabView,
   TitleBar,
   CollectItem,  
+  Input,
 }
