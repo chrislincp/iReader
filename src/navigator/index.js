@@ -7,6 +7,8 @@ import BookSortList from '../screen/bookSortList';
 import { CollectList, CollectDetail } from '../screen/collectList';
 import { Comments, DetailComment } from '../screen/bookComments';
 import { AppColors } from '../themes';
+import Search from '../screen/search';
+
 const Tab = TabNavigator(
   {
     BookRack: {screen: BookRack},
@@ -31,7 +33,7 @@ const Tab = TabNavigator(
   },
 );
 
-const RootStack = StackNavigator(
+const MainStack = StackNavigator(
   {
     Tab: { screen: Tab },
     BookDetail: {screen: BookDetail},
@@ -42,6 +44,7 @@ const RootStack = StackNavigator(
     CollectList: {screen: CollectList},
     CollectDetail: {screen: CollectDetail},
     BookSortList: {screen: BookSortList},
+    Search: {screen: Search},
   },
   {
     headerMode: 'none',
@@ -57,6 +60,18 @@ const RootStack = StackNavigator(
         flex: 1,
       },
     },
+  },
+);
+
+
+const RootStack = StackNavigator(
+  {
+    MainStack: { screen: MainStack },
+  },
+  {
+    initialRouteName: 'MainStack',
+    headerMode: 'none',
+    mode: 'modal',
   },
 );
 

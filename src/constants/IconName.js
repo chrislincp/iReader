@@ -30,4 +30,8 @@ export default {
   mdLeaf: 'md-leaf',
   list: 'ios-list',
   more: 'ios-more',
+  sync: 'ios-sync',
+  search: 'ios-search',
+  refresh: 'md-refresh',
+  trash: 'ios-trash-outline',
 };
