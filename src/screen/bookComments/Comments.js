@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import { BasePage, DataList, CommentItem } from '../../components';
+import { BasePage, DataList, CommentItem, TitleBar } from '../../components';
 import { AppColors } from '../../themes';
 import { getBookComments } from './index.service';
 
@@ -32,28 +32,7 @@ export default class Comments extends BasePage {
     return <CommentItem item={item} onPress={() => this.nav.push('DetailComment',item)} />
   }
   renderHeader() {
-    return (
-      <View 
-        style={{
-          flexDirection: 'row', 
-          height: 36, 
-          alignItems: 'center', 
-          paddingLeft: 10, 
-          paddingRight: 10,
-          backgroundColor: 'white',
-        }}>
-        <View 
-          style={{
-            borderLeftWidth: 4, 
-            borderColor: AppColors.themeColor, 
-            height: 24, 
-            paddingLeft: 10,
-            justifyContent: 'center'
-            }}>
-          <Text>{`全部书评 (${this.nav.state.params.total}条)`}</Text>
-        </View>
-      </View>
-    )
+    return <TitleBar style={{backgroundColor: 'white'}} right={<View />} title={`全部书评 (${this.nav.state.params.total}条)`} />
   }
 
   _render() {

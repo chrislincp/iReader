@@ -4,13 +4,20 @@ import Sizes from './Sizes';
 
 export default {
   appContainer: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.backgroundColor,
+    flex: 1,
   },
 
   smallText: {
     color: Colors.textGreyColor,
     fontSize: 12,
     lineHeight: 16,
+  },
+
+  avatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
   },
 
   // Default
