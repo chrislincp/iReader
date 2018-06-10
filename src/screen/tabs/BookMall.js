@@ -7,11 +7,12 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon, ScrollableTabView, TitleBar } from '../../components';
+import { DataList, Header, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem } from '../../components';
 import {getClassic, getRecommend, getClassicList, getRecommendList, getNewRecommend, getBookSort, getBookList, getBookListBySort} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppSizes, AppStyles } from '../../themes';
 import LoadingStatus from '../../components/LoadingStatus';
+import { timeCompare } from '../../utils/utils';
 export default class BookMall extends BasePage {
   static navigationOptions = {
     tabBarLabel: '书城',
@@ -135,6 +136,18 @@ export default class BookMall extends BasePage {
     return {
       title: '书城',
       left: <View />,
+      right: (
+      <Icon 
+        onPress={() => this.nav.push('Search')}
+        name={IconName.search} 
+        color="white" 
+        size={28}
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+        }} 
+        />
+      )
     }
   }
 
@@ -152,7 +165,7 @@ export default class BookMall extends BasePage {
         borderBottomWidth: AppSizes.hairLineWidth,
         borderColor: AppColors.dividersColor,
       }}
-      onPress={() => this.nav.push('BookList', {title: item.sortname, service: getBookListBySort, options: {order: 1, sort: item.sortid}})}
+      onPress={() => this.nav.push('BookSortList', {title: item.sortname, sort: item.sortid})}
       >
       <View style={{justifyContent: 'center'}}>
         <Text>{item.sortname}</Text>
@@ -165,27 +178,7 @@ export default class BookMall extends BasePage {
   )
 
   _renderBookListItem(item) {
-    return (
-      <TouchableOpacity 
-        key={item.id}
-        style={styles.itemWrap}
-        onPress={() => this.nav.push('CollectList', item)}
-        >
-        <Image style={styles.cover} source={{uri: item.booklist[0].bookimage || ''}} />
-        <View style={{flex: 1}}>
-          <Text>{item.title}</Text>
-          <View style={{flex: 1, flexDirection: 'column'}}>
-          <View style={{justifyContent: 'center', flex: 1}}>
-            <Text style={AppStyles.smallText}>{item.nickname}</Text>
-            <Text style={AppStyles.smallText}>{item.description}</Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-            <Text style={[AppStyles.smallText, {alignItems: 'flex-end'}]}>{`共${item.bookcount}本 | ${item.collectcount}人收藏`}</Text>
-          </View>
-        </View>
-        </View>
-      </TouchableOpacity>
-    )
+    return <CollectItem key={item.id} item={item} onPress={() => this.nav.push('CollectDetail', item)} />;
   }
 
   goDetail(id) {
@@ -233,9 +226,9 @@ export default class BookMall extends BasePage {
           <View tabLabel="书单">
           {bookListLoading ? <LoadingStatus /> :
             <ScrollView>
-              <TitleBar title="最新发布" onPress={() => console.log(111)} />
+              <TitleBar title="最新发布" onPress={() => this.nav.push('CollectList', {title: '最新发布', options: {good: 0, order: 0}})} />
               {newBookList.map(item => this._renderBookListItem(item))}
-              <TitleBar title="本周最热" onPress={() => console.log(111)} />
+              <TitleBar title="最多收藏" onPress={() => this.nav.push('CollectList', {title: '最多收藏', options: {good: 0, order: 1}})} />
               {hotBookList.map(item => this._renderBookListItem(item))}
             </ScrollView>}
           </View>
@@ -251,18 +244,3 @@ export default class BookMall extends BasePage {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  itemWrap: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
-  },
-  cover: {
-    width: 60,
-    height: 75,
-    marginRight: 5,
-  },
-})
