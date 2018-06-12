@@ -33,5 +33,8 @@ export default {
   sync: 'ios-sync',
   search: 'ios-search',
   refresh: 'md-refresh',
+  refreshCircle: 'ios-refresh-circle-outline',
   trash: 'ios-trash-outline',
+  infoCircle: 'ios-information-circle-outline',
+  config: 'ios-settings-outline',
 };

@@ -8,6 +8,7 @@ import { CollectList, CollectDetail } from '../screen/collectList';
 import { Comments, DetailComment } from '../screen/bookComments';
 import { AppColors } from '../themes';
 import Search from '../screen/search';
+import BookPages from '../screen/bookPages';
 
 const Tab = TabNavigator(
   {
@@ -45,6 +46,7 @@ const MainStack = StackNavigator(
     CollectDetail: {screen: CollectDetail},
     BookSortList: {screen: BookSortList},
     Search: {screen: Search},
+    BookPages: {screen: BookPages},
   },
   {
     headerMode: 'none',
