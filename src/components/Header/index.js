@@ -24,6 +24,10 @@ class Header extends Component {
     };
   }
 
+  componentDidMount() {
+    StatusBar.setBarStyle(this.props.statusBar);
+  }
+
   render() {
     const {
       navigation, isFocused, statusBar, left, leftPress, title, right, style, leftStyle, rightStyle, centerStyle, backgroundColor,
