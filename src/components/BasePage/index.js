@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import { Header, ErrorPage } from '../';
 import LoadingStatus from '../LoadingStatus';
 
 class BasePage extends Component {
   constructor(props) {
+    StatusBar.setHidden(false);
     super(props);
     this.nav = this.props.navigation;
     this.state = {};
