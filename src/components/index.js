@@ -11,6 +11,8 @@ import ScrollableTabView from './ScrollableTabView';
 import TitleBar from './TitleBar';
 import CollectItem from './CollectItem';
 import Input from './Input';
+import AnimateModal from './AnimateModal';
+
 export {
   BasePage,
   DataList,
@@ -25,4 +27,5 @@ export {
   TitleBar,
   CollectItem,  
   Input,
+  AnimateModal,
 }
