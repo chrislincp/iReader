@@ -7,20 +7,22 @@ import Icon from '../Icon';
 import IconName from '../../constants/IconName';
 import Sizes from '../../themes/Sizes';
 import NavigatorService from '../../navigator/navigatorServer';
-import { AppColors } from '../../themes';
+import { AppColors, AppSizes } from '../../themes';
 
 class Header extends Component {
-  static propTypes = {}
+  static propTypes = {
+    statusBar: PropTypes.string,
+  }
 
   static defaultProps = {
-    statusBar: 'light-content',
+    statusBar: 'dark-content',
   };
 
   constructor(props) {
     super(props);
     this.state = {
       title: props.title,
-      fontColor: 'black',
+      color: props.fontColor || '#111',
     };
   }
 
@@ -29,6 +31,7 @@ class Header extends Component {
   }
 
   render() {
+    const {color} = this.state;
     const {
       navigation, isFocused, statusBar, left, leftPress, title, right, style, leftStyle, rightStyle, centerStyle, backgroundColor,
     } = this.props;
@@ -38,8 +41,8 @@ class Header extends Component {
         name={IconName.back}
         size={26}
         text="返回"
-        color="white"
-        textStyle={{fontSize: 14, color: 'white', marginLeft: 0}}
+        color={color}
+        textStyle={{fontSize: 14, marginLeft: 0, color,}}
         iconStyle={{ paddingLeft: 10, paddingRight: 10 }}
         onPress={leftPress || (() => {
           Keyboard.dismiss();
@@ -47,7 +50,7 @@ class Header extends Component {
         })}
       />;
 
-    const centerComponent = typeof this.props.title == 'string' ? <Text numberOfLines={1} style={styles.title}>{title}</Text> : title;
+    const centerComponent = typeof this.props.title == 'string' ? <Text numberOfLines={1} style={[{color}, styles.title]}>{title}</Text> : title;
 
     const rightComponent = right || null;
 
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: ifAndroid(0, ifIphoneX(44, 20)),
-    backgroundColor: AppColors.themeColor,
+    backgroundColor: 'white',
     zIndex: 1,
   },
   left: {
@@ -92,7 +95,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    color: 'white',
   },
   right: {
     flex: 1,

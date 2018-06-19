@@ -6,6 +6,7 @@ import LoadingStatus from '../LoadingStatus';
 class BasePage extends Component {
   constructor(props) {
     StatusBar.setHidden(false);
+    StatusBar.setBarStyle('dark-content');
     super(props);
     this.nav = this.props.navigation;
     this.state = {};
