@@ -9,7 +9,7 @@ import {
   LayoutAnimation
 } from 'react-native';
 import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
-import {getTopList, getOtherList, getBookDetail} from './index.service';
+import {getTopList, getOtherList, getBookDetail, getOtherName} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppStyles } from '../../themes';
 
@@ -23,21 +23,29 @@ export default class Top extends BasePage {
   constructor(props) {
     super(props);
     this.state = {
+      screenState: 'loading',
       topTypes: [
         {title: '最热榜', order: 2, icon: 'flame', color: AppColors.danger},
         {title: '评分榜', order: 1, icon: 'rose', color: AppColors.themeColor},
         {title: '推荐榜', order: 5, icon: 'mdThumbsUp', color: AppColors.warning},
         {title: '完结榜', order: 4, icon: 'mdLeaf', color: AppColors.success},
       ],
-      otherTop: [
-        {title: '百度热搜榜', topid: 101},
-        {title: '起点热搜榜', topid: 102},
-        {title: '纵横月票榜', topid: 103},
-        {title: '17K订阅帮', topid: 104},
-        {title: '逐浪点击榜', topid: 105},
-      ],
+      otherTop: [],
       loadMore: false,
     };
+  }
+
+  componentDidMount() {
+    getOtherName({sex: 1}).then(res => {
+      this.setState({
+        otherTop: res.toplist,
+        screenState: 'success',
+      })
+    }).catch(err => {
+      this.setState({
+        screenState: 'success'
+      })
+    })
   }
 
   toggleMore() {
@@ -128,9 +136,9 @@ export default class Top extends BasePage {
                   borderColor: AppColors.dividersColor,
                   borderBottomWidth: otherTop.length == index + 1 ? 0 : StyleSheet.hairlineWidth,
                 }}
-                onPress={() => this.nav.push('BookList', {title: item.title, service: getOtherList,  options: {topid: item.topid}})}
+                onPress={() => this.nav.push('BookList', {title: item.topname, service: getOtherList,  options: {topid: item.topid}})}
                 >
-                <Text style={AppStyles.smallText}>{item.title}</Text>
+                <Text style={AppStyles.smallText}>{item.topname}</Text>
               </TouchableOpacity>
             ))}
           </View>

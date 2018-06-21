@@ -1,6 +1,7 @@
 import { Dimensions, Linking, PixelRatio, Platform, Toast } from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
+import { AppSizes } from '../themes';
 
 const deviceWidth = Dimensions.get('window').width; // 设备的宽度
 const deviceHeight = Dimensions.get('window').height; // 设备的高度
@@ -76,4 +77,27 @@ export function timeCompare(time) {
     text = Math.floor(timeDiff / 31536000) + '年';
   }
   return text;
+}
+
+export const formatterChapter = (info) => {
+  const width = AppSizes.screenWidth - 20;
+  const height = AppSizes.screenHeight - ifIphoneX(40, 10);
+  let fontCount = parseInt(width / 14 - 1)
+  let fontLines = parseInt((height - 20) / 24);
+  const length = info.chaptercontent;
+  let arr = [];
+  for (var i = 0; i <= fontLines; i++) {
+    let str = info.chaptercontent.substring(x, x + fontCount)
+    if (str.indexOf('@') != -1) {
+      y = x + str.indexOf('@') + 1
+      _array[i] = content.substring(x, y).replace('@', '')
+      x = y
+      continue
+    } else {
+      y = x + fontCount
+      _array[i] = content.substring(x, y)
+      x = y
+      continue
+    }
+  }
 }
