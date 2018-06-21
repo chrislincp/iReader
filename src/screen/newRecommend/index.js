@@ -47,22 +47,3 @@ export default class Recommend extends BasePage {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  itemWrap: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: '#D8D8D8',
-  },
-  cover: {
-    width: 60,
-    height: 75,
-    marginRight: 5,
-  },
-  desc: {
-    fontSize: 12,
-    color: '#888',
-  }
-})

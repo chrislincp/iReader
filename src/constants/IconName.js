@@ -1,4 +1,5 @@
 export default {
+  close: 'ios-close',
   back: 'ios-arrow-back',
   topArrow: 'ios-arrow-up',
   downArrow: 'ios-arrow-down',
@@ -37,4 +38,6 @@ export default {
   trash: 'ios-trash-outline',
   infoCircle: 'ios-information-circle-outline',
   config: 'ios-settings-outline',
+  checkmark: 'ios-checkmark',
+  pin: 'md-pin',
 };
