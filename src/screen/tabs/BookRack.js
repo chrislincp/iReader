@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   View,
-  Text
+  Text,
 } from 'react-native';
 import { BasePage, Icon } from '../../components';
 import IconName from '../../constants/IconName';
@@ -17,6 +17,7 @@ export default class BookRack extends BasePage {
     super(props);
     this.state = {};
   }
+
 
   _headerProps() {
     return {

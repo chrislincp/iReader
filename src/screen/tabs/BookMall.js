@@ -140,7 +140,6 @@ export default class BookMall extends BasePage {
       <Icon 
         onPress={() => this.nav.push('Search')}
         name={IconName.search} 
-        color="white" 
         size={28}
         style={{
           paddingLeft: 20,

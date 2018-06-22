@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  Image,
 } from 'react-native';
 import { BasePage, DataList, Icon } from '../../components';
 import { AppColors, AppSizes } from '../../themes';
@@ -20,6 +21,7 @@ export default class BookDir extends BasePage {
       screenState: 'loading',
       bookInfo: this.nav.state.params,
       dirList: [],
+      order: false,
     }
   }
 
@@ -31,7 +33,6 @@ export default class BookDir extends BasePage {
         this.setState({
           dirList: res.chapterlist,
           screenState: 'success',
-          order: false,
         })
       }
     }).catch(err => {
@@ -45,7 +46,24 @@ export default class BookDir extends BasePage {
     const {bookInfo, order} = this.state;
     return {
       title: bookInfo.bookname,
-      right: <Icon size={26} color="white" style={{padding: 10}} name={order ? IconName.arrowDropUp : IconName.arrowDropDown} onPress={() => this.sort()} />
+      right: (
+        <TouchableOpacity
+          onPress={() => this.sort()}
+          style={{
+            width: 16, 
+            height: 16,
+            marginRight: 10,
+          }}
+          >
+          <Image 
+            style={{
+              width: 16, 
+              height: 16,
+            }}
+            source={order ? require( '../../images/up_dark.png') : require( '../../images/down_dark.png')}
+            />
+        </TouchableOpacity>
+      ),
     }
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BasePage, StarRate, Icon, Header, Tag } from '../../components';
+import { BasePage, StarRate, Icon, Header, Tag, CommentItem } from '../../components';
 import {
   ScrollView,
   View,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import LoadingStatus from '../../components/LoadingStatus';
 import { getBookDetail, getBookHotComment, getSimiarBook, getBookDir } from './index.service';
-import { AppColors } from '../../themes';
+import { AppColors, AppStyles } from '../../themes';
 import IconName from '../../constants/IconName';
 import { timeCompare, ifIphoneX } from '../../utils/utils';
 export default class BookDetail extends BasePage {
@@ -86,6 +86,7 @@ export default class BookDetail extends BasePage {
   onLayoutDesc(e) {
     const layout = e.nativeEvent.layout;
     const {height} = layout;
+    console.log(height);
     if (height < 55) {
       this.setState({
         noMoreDesc: true,
@@ -94,8 +95,16 @@ export default class BookDetail extends BasePage {
       this.setState({
         noMoreDesc: false,
       })
+    }  
+  }
+
+  goToPages(bookInfo) {
+    console.log(bookInfo);
+    const props = {
+      bookInfo,
+      from: 'book'
     }
-    
+    this.nav.push('BookPages', props);
   }
   
   _render() {
@@ -110,9 +119,9 @@ export default class BookDetail extends BasePage {
                 <Text style={{fontSize: 16}}>{bookInfo.bookname}</Text>
               </View>
               <View style={styles.mainInfo}>
-                <Text style={styles.mainInfoText}>{`作者:${bookInfo.author}`}</Text>
-                <Text style={styles.mainInfoText}>{`状态:${bookInfo.bookprocess} | ${bookInfo.sortname}`}</Text>
-                <Text style={styles.mainInfoText}>{`${timeCompare(bookInfo.updatetime)}前更新`}</Text>
+                <Text style={[AppStyles.smallText,styles.mainInfoText]}>{`作者:${bookInfo.author}`}</Text>
+                <Text style={[AppStyles.smallText,styles.mainInfoText]}>{`状态:${bookInfo.bookprocess} | ${bookInfo.sortname}`}</Text>
+                <Text style={[AppStyles.smallText,styles.mainInfoText]}>{`${timeCompare(bookInfo.updatetime)}前更新`}</Text>
                 {/* <Text style={styles.mainInfoText} numberOfLines={1}>{`更新:${bookInfo.lastchaptername}`}</Text> */}
               </View>
               <View style={styles.star}>
@@ -172,12 +181,12 @@ export default class BookDetail extends BasePage {
                    alignItems: 'center', 
                    height: 36,
                    marginTop: 10,
-                   borderColor: AppColors.themeColor,
+                   borderColor: AppColors.dividersColor,
                   borderTopWidth: StyleSheet.hairlineWidth,
                 }}
                 onPress={() => this.toggoleDesc()}
                 >
-                <Text style={{fontSize: 12, color: AppColors.themeColor, marginRight: 5}}>{showMoreDesc ? '点击收起' : '查看全部'}</Text>
+                <Text style={[AppStyles.smallText, {marginRight: 5}]}>{showMoreDesc ? '点击收起' : '查看全部'}</Text>
                 <Icon name={showMoreDesc ? IconName.topArrow : IconName.downArrow} color={AppColors.themeColor} size={16} />
               </TouchableOpacity>}
             </Animated.View>
@@ -188,41 +197,12 @@ export default class BookDetail extends BasePage {
               <Text>热门书评</Text>
             </View>
             <View style={styles.bookHotCommentList}>
-              {bookHotCommentList.map((item, index) => {
-                return (
-                  <TouchableOpacity 
-                    key={item.bookCommentid}
-                    style={{
-                      flexDirection: 'row', 
-                      justifyContent: 'center', 
-                      padding: 10,
-                      borderColor: AppColors.dividersColor, 
-                      borderBottomWidth: StyleSheet.hairlineWidth
-                      }}>
-                    <View style={{width: 30, marginRight: 5}}>
-                      <Image style={{width: 30, height: 30, borderRadius: 15}} source={{uri: item.userimage}} />
-                    </View>
-                    <View style={{flex: 1}}>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Text style={{fontSize: 12}}>{item.nickname}</Text>
-                        <Text style={{fontSize: 12, color: AppColors.textGreyColor}}>{`${timeCompare(item.posttime)}前更新`}</Text>
-                      </View>
-                      <Text style={{fontSize: 16, lineHeight: 30}}>{item.title}</Text>
-                      <Text style={{fontSize: 12, color: AppColors.textGreyColor, lineHeight: 16}}>{item.content}</Text>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                        <View style={{flexDirection: 'row'}}>
-                          <Icon name={IconName.mdThumbsUp} color={AppColors.themeColor} size={16} text={`${item.flowercount + item.eggcount}`} />
-                        </View>
-                        <View>
-                          <Icon name={IconName.text} size={16} text={`${item.replycount}`}/>
-                        </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                )
-              })}
-              <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 36}}>
-                <Text style={{fontSize: 12, color: AppColors.themeColor, marginRight: 5}}>全部评论</Text>
+              {bookHotCommentList.map((item) => <CommentItem onPress={() => this.nav.push('DetailComment', item)} key={item.bookCommentid} item={item} />)}
+              <TouchableOpacity 
+                style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 36}}
+                onPress={() => this.nav.push('Comments', {id: bookInfo.bookid, title: bookInfo.bookname, total: bookInfo.commentcount})}
+                >
+                <Text style={[AppStyles.smallText, {marginRight: 5}]}>全部评论</Text>
                 <Icon name={IconName.downArrow} color={AppColors.themeColor} size={16} />
               </TouchableOpacity>
             </View>
@@ -282,13 +262,14 @@ export default class BookDetail extends BasePage {
             <Icon name={IconName.list} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="目录" />
           </TouchableOpacity>
           <TouchableOpacity 
+            onPress={() => this.goToPages(bookInfo)}
             style={{
               flex: 1,
               backgroundColor: AppColors.themeColor, 
               alignItems: 'center',
               justifyContent: 'center',
               }}>
-            <Icon color="white" text="立即阅读" textStyle={{fontSize: 14, color: 'white'}} size={16} />
+              <Text style={{color: 'white'}}>立即阅读</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={{
@@ -335,8 +316,6 @@ const styles = StyleSheet.create({
   },
   mainInfoText: {
     flex: 1,
-    fontSize: 12,
-    color: AppColors.textGreyColor,
     justifyContent: 'center',
   },
   star: {

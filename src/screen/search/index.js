@@ -25,6 +25,7 @@ export default class Search extends BasePage {
       page: 1,
       hotKeyWords: [],
       searchHistory: [],
+      tagColors: [AppColors.success, AppColors.danger, AppColors.warning, AppColors.lightBlue, AppColors.themeColor, AppColors.darkGray, AppColors.lightBlack, AppColors.lightGray],
     }
   }
 
@@ -42,6 +43,7 @@ export default class Search extends BasePage {
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
+          backgroundColor: AppColors.lightGray,
       }}
       >
         <Icon 
@@ -59,7 +61,7 @@ export default class Search extends BasePage {
           clearButtonMode="while-editing"
           style={{
             flex: 1,
-            backgroundColor: 'white',
+            backgroundColor: AppColors.lightGray,
             height: 30,
           }}
           value={this.state.keyWord} 
@@ -76,7 +78,7 @@ export default class Search extends BasePage {
             NavigatorServer.goBack();
           }}
           >
-          <Text style={{color: 'white'}}>取消</Text>
+          <Text>取消</Text>
         </TouchableOpacity>
       ),
       leftStyle: { flex: 0 },
@@ -177,7 +179,7 @@ export default class Search extends BasePage {
           options={{key: keyWord}} 
           renderItem={(item) => this._renderItem(item)}
           /> : 
-          <ScrollView>
+          <View style={{flexDirection: 'column', flex: 1}}>
             <View style={{backgroundColor: 'white', padding: 15, marginBottom: 15}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -185,7 +187,6 @@ export default class Search extends BasePage {
                 </View>
                 <Icon 
                   onPress={() => this.refreshHotWords()}
-                  iconStyle={{paddingTop: 3}} 
                   color={AppColors.textGreyColor} 
                   text="换一批" name={IconName.refresh} 
                   size={20}
@@ -196,37 +197,36 @@ export default class Search extends BasePage {
                   <TouchableOpacity 
                     key={index}
                     onPress={() => this.search(item.Keyword)}
-                    style={styles.btn}>
-                    <Text>{item.Keyword}</Text>
+                    style={[styles.btn, {backgroundColor: this.state.tagColors[Math.floor(Math.random() * 7)]}]}>
+                    <Text style={{color: 'white'}}>{item.Keyword}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             </View>
-            <View style={{backgroundColor: 'white', padding: 15, marginBottom: 15}}>
+            <View style={{backgroundColor: 'white', padding: 15, flex: 1,}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <Text>搜索历史</Text>
                 </View>
                 <Icon 
                   onPress={() => this.deleteHistory()}
-                  iconStyle={{paddingTop: 3}} 
                   color={AppColors.textGreyColor} 
                   text="清空" name={IconName.trash} 
                   size={20}
                   />
               </View>
-              <View style={{marginTop: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
+              <ScrollView style={{marginTop: 10}}>
                 {searchHistory.map((item, index) => (
                   <TouchableOpacity 
                     key={index}
                     onPress={() => this.search(item)}
-                    style={styles.btn}>
+                    style={styles.history}>
                     <Text>{item}</Text>
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
             </View>
-          </ScrollView>
+          </View>
           }
       </View>
     )
@@ -237,14 +237,20 @@ const styles = StyleSheet.create({
   btn: {
     justifyContent: 'center', 
     alignItems: 'center', 
-    height: 30,
-    borderColor: AppColors.themeColor,
-    borderWidth: AppSizes.hairLineWidth,
-    borderRadius: 15,
-    minWidth: 50,
+    height: 24,
+    borderRadius: 4,
+    minWidth: 68,
     paddingLeft: 8,
     paddingRight: 8,
     marginRight: 8,
     marginBottom: 8,
-    }
+    },
+    history: {
+      flexDirection: 'row',
+      flex: 1,
+      alignItems: 'center',
+      height: 40,
+      borderBottomWidth: AppSizes.hairLineWidth,
+      borderColor: AppColors.lightGray,
+    },
 })
