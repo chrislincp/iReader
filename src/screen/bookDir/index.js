@@ -78,6 +78,7 @@ export default class BookDir extends BasePage {
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderColor: AppColors.dividersColor,
         }}
+        onPress={() => this.goPage(item)}
         >
         <Text style={{fontSize: 12}} numberOfLines={1}>{item.chaptername}</Text>
       </TouchableOpacity>
@@ -89,6 +90,17 @@ export default class BookDir extends BasePage {
     order ? this.refs.flatlist.scrollToIndex({index: 0}) :
     this.refs.flatlist.scrollToEnd();
     this.setState({ order: !order});
+  }
+
+  goPage(item) {
+    console.log(item);
+    const {bookInfo, dirList} = this.state;
+    const props = {
+      dirList,
+      bookInfo,
+      chapterid: item.chapterid
+    };
+    this.nav.push('BookPages', props);
   }
 
   _render() {

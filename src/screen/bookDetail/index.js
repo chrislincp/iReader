@@ -102,7 +102,6 @@ export default class BookDetail extends BasePage {
     console.log(bookInfo);
     const props = {
       bookInfo,
-      from: 'book'
     }
     this.nav.push('BookPages', props);
   }
