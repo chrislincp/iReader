@@ -19,6 +19,7 @@ import { AppColors, AppSizes } from '../../themes';
 import { getBookDirectory, getBookChapter } from './index.service';
 import { ifIphoneX, ifAndroid } from '../../utils/utils';
 import IconName from '../../constants/IconName';
+import DeviceStorage from '../../utils/deviceStorage';
 
 export default class BookPages extends BasePage {
   constructor(props) {
@@ -44,10 +45,6 @@ export default class BookPages extends BasePage {
       navProps: this.nav.state.params,
       chapterinfoList: [],
       currentDetail: {},
-      currentChapter: {},
-      currentChapterPage: 1,
-      currentChapterTotalPages: 1,
-      totalChapter: 1,
       dirList: [],
       chapterDetail: [],
       order: false,
@@ -59,6 +56,7 @@ export default class BookPages extends BasePage {
   }
 
   componentDidMount() {
+    this.getLocalOptions();
     const {bookInfo, chapterid, dirList} = this.state.navProps;
     if (dirList) {
       this.setState({dirList});
@@ -69,17 +67,43 @@ export default class BookPages extends BasePage {
   }
 
   /**
+   * 获取本地配置
+   */
+  getLocalOptions() {
+    DeviceStorage.get('pageOptions').then(res => {
+      if (res) {
+        this.setState({
+          options: res
+        })
+      }
+    })
+  }
+
+  /**
+   * 保存当前配置
+   */
+  saveLocalOptions() {
+    DeviceStorage.save('pageOptions', this.state.options);
+  }
+
+  /**
    * 退出阅读页显示statusbar
    */
 
   componentWillUnmount(){
     StatusBar.setHidden(false);
     StatusBar.setBarStyle('dark-content');
+    this.saveLocalOptions();
   }
 
 
   mountGetChapters(dirList, chapterid){
+    this.setState({
+      chapterDetail: [],
+      chapterinfoList: [],
+    })
     let chapters = [];
+    let status;
     if (chapterid) {
       dirList.forEach((item, index) => {
         if (item.chapterid == chapterid) {
@@ -88,12 +112,20 @@ export default class BookPages extends BasePage {
               dirList[index].chapterid,
               dirList[index + 1].chapterid,
             ]
+            status = 'first';
+          } else if (item.number == dirList.length) {
+            chapters = [
+              dirList[index - 1].chapterid,
+              dirList[index].chapterid,
+            ]
+            status = 'last';
           } else {
             chapters = [
               dirList[index - 1].chapterid,
               dirList[index].chapterid,
               dirList[index + 1].chapterid,
             ]
+            status = 'center';
           }
         }
       });
@@ -102,8 +134,9 @@ export default class BookPages extends BasePage {
         dirList[0].chapterid,
         dirList[1].chapterid,
       ]
+      status = 'first';
     }
-    this.getChapters(chapters, 'next', true);
+    this.getChapters(chapters, 'next', true, status);
   }
 
 
@@ -135,7 +168,10 @@ export default class BookPages extends BasePage {
    * @param {*} ids 
    */
 
-  getChapters(ids, type, mount) {
+  getChapters(ids, type, mount, status) {
+    this.setState({
+      loading: true,
+    })
     const {bookInfo} = this.state.navProps;
     let serviceList = [];
     ids.forEach(id => {
@@ -145,6 +181,7 @@ export default class BookPages extends BasePage {
     let contentsLen = [];
     Promise.all(serviceList).then(res => {
       let {chapterDetail, chapterinfoList} = this.state;
+      console.log(res);
       res.forEach(val => {
         const content = val.chapterinfo.chaptercontent;
         const title = val.chapterinfo.chaptername;
@@ -174,13 +211,14 @@ export default class BookPages extends BasePage {
       }
       console.log(currentDetail);
       this.setState({
+        loading: false,
         currentDetail,
         chapterDetail,
         chapterinfoList,
         screenState: 'success',
       });
       if (mount) {
-        if (contentsLen.length == 3) this.refs.contentList.scrollToIndex({index: contentsLen[0], animated: false});
+        if (status == 'last' || status == 'center') this.refs.contentList.scrollToIndex({index: contentsLen[0], animated: false});
       } else {
         chapterDetail.forEach((item, index) => {
           if (item.chapter.number == currentDetail.chapter.number && item.num == currentDetail.num) {
@@ -188,10 +226,6 @@ export default class BookPages extends BasePage {
           }
         })
       }
-
-      setTimeout(() => {
-        this.setState({ loading: false });
-      }, 3000);
     }).catch(err => {
       console.log(err);
     })
@@ -202,7 +236,7 @@ export default class BookPages extends BasePage {
    */
 
   getChapterNum(id) {
-    let number = 1;
+    let number;
     const {dirList} = this.state;
     dirList.forEach((item, index) => {
       if (item.chapterid == id) number = index + 1;
@@ -218,7 +252,7 @@ export default class BookPages extends BasePage {
     let _arrTemp = this.contentFormat(_content)
     _arrTemp.forEach((content, index) => {
       let _chapterInfo = {
-        title: title,
+        title,
         num: index + 1,
         total: _arrTemp.length,
         content,
@@ -236,7 +270,7 @@ export default class BookPages extends BasePage {
     const lineHeight = fontSize * 2 - 4;
     const width = AppSizes.screenWidth - 30;
     const height = AppSizes.screenHeight - ifIphoneX(40, 20) - 50;
-    let fontCount = parseInt(width / fontSize) == (width / fontSize) ? parseInt(width / fontSize) : parseInt(width / fontSize - 1)
+    let fontCount = parseInt(width / fontSize - 1);
     let fontLines = parseInt(height / lineHeight);
     const length = content.length
     let array = []
@@ -325,9 +359,109 @@ export default class BookPages extends BasePage {
   }
 
   onChangeOptions(key, value) {
-    let {options} = this.state;
+    let {options, currentDetail, chapterDetail, chapterinfoList, dirList} = this.state;
+
+    //  值与原先相同时return
+    if (options[key] == value) return;
     options[key] = value;
     this.setState({ options });
+    switch (key) {
+      case 'scroll':
+        //  当改变阅读模式  保持在当前页
+        this.setState({
+          chapterDetail: [],
+        })
+        chapterDetail.forEach((item, index) => {
+          if (item.chapter.number == currentDetail.chapter.number && item.num == currentDetail.num) {
+            const detail = chapterDetail;
+            setTimeout(() => {
+              this.setState({
+                chapterDetail: detail,
+              })
+              this.refs.contentList.scrollToIndex({index, animated: false}); 
+            });
+          }
+        })     
+      break;
+      case 'size':
+        this.setContentsBySize();
+      break;   
+    }
+  }
+
+  /**
+   * 改变文字大小 重新更新内容 
+   */
+
+  setContentsBySize() {
+    const {currentDetail, chapterinfoList} = this.state;
+    this.setState({
+      chapterDetail: [],
+      chapterinfoList: [],
+    })
+    let currentIndex;
+    chapterinfoList.forEach((item, index) => {
+      if (item.chapterid == currentDetail.chapter.chapterid) {
+        currentIndex = index;
+        return;
+      }
+    })
+    let newInfoList = [];
+    if (currentIndex == 0) {
+      newInfoList = [
+        chapterinfoList[0],
+        chapterinfoList[1],
+      ]
+    } else if (currentIndex == chapterinfoList.length - 1) {
+      newInfoList = [
+        chapterinfoList[chapterinfoList.length - 2],
+        chapterinfoList[chapterinfoList.length - 1],
+      ]
+    } else {
+      newInfoList = [
+        chapterinfoList[currentIndex - 1],
+        chapterinfoList[currentIndex],
+        chapterinfoList[currentIndex + 1],
+      ]
+    }
+    let chapterDetail = [];
+    let detailIndex;
+    let newCurrentDetail;
+    newInfoList.forEach(val => {
+      const content = val.chaptercontent;
+      const title = val.chaptername;
+      const chapterid = val.chapterid;
+      const number = this.getChapterNum(chapterid);
+      chapterDetail = chapterDetail.concat(this._formatChapter(content, number, title));
+    })
+
+    for (let i = 0; i < chapterDetail.length; i++) {
+      const detail = chapterDetail[i];
+      if (detail.chapter.chapterid == currentDetail.chapter.chapterid) {
+        if (currentDetail.num <= detail.total) {
+          if (detail.num == currentDetail.num) {
+            detailIndex = i;
+            newCurrentDetail = detail;
+            break;
+          }
+        } else {
+          if (detail.num == detail.total) {
+            detailIndex = i;
+            newCurrentDetail = detail;
+            break;
+          }
+        }
+      }
+    }
+
+    this.setState({
+      currentDetail: newCurrentDetail,
+      chapterDetail,
+      chapterinfoList: newInfoList,
+    });
+    setTimeout(() => {
+     this.refs.contentList.scrollToIndex({index: detailIndex, animated: false}); 
+    });
   }
 
   configRender() {
@@ -340,6 +474,32 @@ export default class BookPages extends BasePage {
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
+            marginBottom: 10,
+          }}
+          >
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: AppColors.textGreyColor}}>字体</Text>
+          </View>
+          <Slider 
+            style={{
+              flex: 1, 
+              justifyContent: 'center', 
+              flexDirection: 'row',
+              marginLeft: 10
+            }} 
+            minimumTrackTintColor={AppColors.themeColor}
+            onValueChange={(val) => this.onChangeOptions('size', val.toFixed(1) - 0)}
+            step={0.1}
+            value={options.size}
+            />
+        </View>
+        <View 
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flex: 1,
+            marginBottom: 10,
           }}
           >
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -382,7 +542,6 @@ export default class BookPages extends BasePage {
           style={{
             flexDirection: 'row',
             flex: 1,
-            marginTop: 10,
             justifyContent: 'space-between',
           }}
           >
@@ -446,11 +605,21 @@ export default class BookPages extends BasePage {
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderColor: AppColors.dividersColor,
         }}
+        onPress={() => this.onPressDir(item)}
         >
         <Text style={{fontSize: 12}} numberOfLines={1}>{item.chaptername}</Text>
         {currentDetail.chapter.number == item.number && <Icon name={IconName.pin} size={20} color={AppColors.themeColor} style={{marginLeft: 15}} />}
       </TouchableOpacity>
     )
+  }
+
+  onPressDir(chapter) {
+    this.setState({
+      showDirList: false,
+      showOptions: false,
+    })
+    if (chapter.chapterid == this.state.currentDetail.chapter.chapterid) return;
+    this.mountGetChapters(this.state.dirList, chapter.chapterid);
   }
 
 
@@ -460,7 +629,7 @@ export default class BookPages extends BasePage {
   sort() {
     let {order, dirList} = this.state;
     if (order) {
-      this.refs.flatlist.scrollToIndex({index: 0});
+      this.refs.flatlist.scrollToIndex({index: 0, animated: false});
       console.log(this.refs.flatlist);
     } else {
       this.refs.flatlist.scrollToEnd();
@@ -477,6 +646,7 @@ export default class BookPages extends BasePage {
     const pageSize = scroll == 'y' ? AppSizes.screenHeight : AppSizes.screenWidth;
     const scrollVal = e.nativeEvent.contentOffset[scroll] / pageSize;
     
+    if (!chapterinfoList.length) return;
     // 设置当前内容
     if (Math.floor(scrollVal) == scrollVal) {
       const index = scrollVal;
@@ -490,11 +660,8 @@ export default class BookPages extends BasePage {
     if (loading) return; // 防止重复请求
     let type;
     let currentIndex;
-    chapterinfoList.every((item, index) => {
-      if (item.chapterid == currentDetail.chapter.chapterid) {
-        currentIndex = index;
-        return;
-      }
+    chapterinfoList.forEach((item, index) => {
+      if (item.chapterid == currentDetail.chapter.chapterid) currentIndex = index;
     });
     if (currentIndex == 1) {
 
@@ -505,10 +672,37 @@ export default class BookPages extends BasePage {
     }
   }
 
+  onPressBottom(type) {
+    const {navProps, dirList, currentDetail} = this.state;
+    const {bookInfo} = navProps;
+    if (type !== 'config' && this.state.showOptsModal) this.setState({ showOptsModal: false });
+    switch (type) {
+      case 'comment':
+        this.nav.push('Comments', {id: bookInfo.bookid, title: bookInfo.bookname, total: bookInfo.commentcount})
+      break;
+      case 'config':
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+          showOptsModal: !this.state.showOptsModal,
+          onPressOptsModal: 'config',
+        })
+      break;
+      case 'dir': 
+        this.setState({ showDirList: true });
+        setTimeout(() => {
+          dirList.forEach((item, index) => {
+            if (item.chapterid == currentDetail.chapter.chapterid) this.refs.flatlist.scrollToIndex({index});
+          })
+        });
+      break;
+    }
+  }
+
   _render() {
     const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail} = this.state;
     const {bookInfo} = navProps;
     const contentLenth = options.scroll == 'x' ? AppSizes.screenWidth : AppSizes.screenHeight;
+    console.log(currentDetail);
     return (
       <View style={{backgroundColor: options.color, flex: 1}}>
         <Animated.View
@@ -569,25 +763,19 @@ export default class BookPages extends BasePage {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomItem}
-              onPress={() => this.setState({ showDirList: true})}
+              onPress={() => this.onPressBottom('dir')}
               >
               <Icon name={IconName.list} color="white" size={24} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomItem}
-              onPress={() => this.nav.push('Comments', {id: bookInfo.bookid, title: bookInfo.bookname, total: bookInfo.commentcount})}
+              onPress={() => this.onPressBottom('comment')}
               >
               <Icon name={IconName.chatbubbles} color="white" size={20} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomItem}
-              onPress={() => {
-                LayoutAnimation.easeInEaseOut();
-                this.setState({
-                  showOptsModal: !this.state.showOptsModal,
-                  onPressOptsModal: 'config',
-                })
-              }}
+              onPress={() => this.onPressBottom('config')}              
               >
               <Icon name={IconName.config} color="white" size={20} />
             </TouchableOpacity>
