@@ -24,7 +24,7 @@ export default class Comments extends BasePage {
 
   _headerProps() {
     return {
-      title: `${this.nav.state.params.title}的书评`,
+      title: `${this.nav.state.params.title}的书评 (${this.nav.state.params.total})`,
     }
   }
 
@@ -44,7 +44,7 @@ export default class Comments extends BasePage {
           convertData={res => res.bookcommentlist}
           service={getBookComments}
           renderItem={item => this._renderItem(item)}
-          renderHeader={() => this.renderHeader()}
+          // renderHeader={() => this.renderHeader()}
           />
       </View>
     )
