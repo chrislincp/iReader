@@ -17,12 +17,13 @@ export default class CollectItem extends React.Component {
 
   render() {
     const {item, onPress} = this.props;
+    console.log(item);
     return (
       <TouchableOpacity 
         style={styles.itemWrap}
         onPress={() => onPress()}
         >
-        <Image style={styles.cover} source={{uri: item.booklist[0].bookimage || ''}} />
+        <Image style={styles.cover} source={{uri: item.booklist.length ? item.booklist[0].bookimage || '' : ''}} />
         <View style={{flex: 1}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text numberOfLines={1}>{item.title}</Text>
