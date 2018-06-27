@@ -56,7 +56,7 @@ export default class Search extends BasePage {
           }}
           />
         <Input 
-          autoFocus
+          // autoFocus
           placeholder="请输入书名或作者名"
           clearButtonMode="while-editing"
           style={{
@@ -203,7 +203,7 @@ export default class Search extends BasePage {
                 ))}
               </View>
             </View>
-            <View style={{backgroundColor: 'white', padding: 15, flex: 1,}}>
+            <View style={{backgroundColor: 'white', padding: 15, paddingBottom: 0, flex: 1,}}>
               <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
                   <Text>搜索历史</Text>
