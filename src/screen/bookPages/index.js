@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  Header, BasePage, Icon, AnimateModal,
+  Header, BasePage, Icon, AnimateModal, Toast,
 } from '../../components';
 import {
   View,
@@ -57,10 +57,11 @@ export default class BookPages extends BasePage {
 
   componentDidMount() {
     this.getLocalOptions();
-    const {bookInfo, chapterid, dirList} = this.state.navProps;
+    const {bookInfo, chapterid, dirList, newest} = this.state.navProps;
     if (dirList) {
       this.setState({dirList});
-      this.mountGetChapters(dirList, chapterid);
+      let id = newest ? dirList[dirList.length -1].chapterid : chapterid;
+      this.mountGetChapters(dirList, id);
     } else {
       this.getDirList();
     }
@@ -147,14 +148,15 @@ export default class BookPages extends BasePage {
    */
 
    getDirList() {
-     const {bookInfo, chapterid} = this.state.navProps;
+     const {bookInfo, chapterid, newest} = this.state.navProps;
     getBookDirectory(bookInfo.bookid).then(res => {
       console.log(res);
       const dirList = res.chapterlist;
       this.setState({
         dirList,
       });
-      this.mountGetChapters(dirList, chapterid);
+      let id = newest ? dirList[dirList.length -1].chapterid : chapterid;
+      this.mountGetChapters(dirList, id);
    }).catch(err => {
     this.setState({
       screenState: 'error',
@@ -186,33 +188,35 @@ export default class BookPages extends BasePage {
         const content = val.chapterinfo.chaptercontent;
         const title = val.chapterinfo.chaptername;
         const chapterid = val.chapterinfo.chapterid;
-        const number = this.getChapterNum(chapterid);
-        contentsLen.push(this._formatChapter(content, number, title).length);
+        const index = this.getChapterIndex(chapterid);
+        contentsLen.push(this._formatChapter(content, index, title).length);
         if (type == 'next') {
-          chapterDetail = chapterDetail.concat(this._formatChapter(content, number, title));
+          chapterDetail = chapterDetail.concat(this._formatChapter(content, index, title));
           chapterinfoList.push(val.chapterinfo);
         } else {
-          chapterDetail = this._formatChapter(content, number, title).concat(chapterDetail);
+          chapterDetail = this._formatChapter(content, index, title).concat(chapterDetail);
           chapterinfoList = [val.chapterinfo].concat(chapterinfoList);
         }
       })
 
       
-      console.log(chapterDetail, chapterinfoList, contentsLen);
       let currentDetail = {};
       if (mount) {
-        if (contentsLen.length == 3) {
-          currentDetail = chapterDetail[contentsLen[0]];
-        } else {
-          currentDetail = chapterDetail[0];
+        switch (status) {
+          case 'first':
+            currentDetail = chapterDetail[0];
+          break;
+          case 'center':
+            currentDetail = chapterDetail[contentsLen[0]];
+          break;
+          case 'last':
+            currentDetail = chapterDetail[contentsLen[0]];
+          break;
         }
-      } else {
-        currentDetail = this.state.currentDetail;
+        this.setState({ currentDetail });       
       }
-      console.log(currentDetail);
       this.setState({
         loading: false,
-        currentDetail,
         chapterDetail,
         chapterinfoList,
         screenState: 'success',
@@ -221,11 +225,12 @@ export default class BookPages extends BasePage {
         if (status == 'last' || status == 'center') this.refs.contentList.scrollToIndex({index: contentsLen[0], animated: false});
       } else {
         chapterDetail.forEach((item, index) => {
-          if (item.chapter.number == currentDetail.chapter.number && item.num == currentDetail.num) {
+          if (item.chapter.chapterid == this.state.currentDetail.chapter.chapterid && item.num == this.state.currentDetail.num) {
             this.refs.contentList.scrollToIndex({index, animated: false});
           }
         })
       }
+      Toast.hide();
     }).catch(err => {
       console.log(err);
     })
@@ -235,16 +240,16 @@ export default class BookPages extends BasePage {
    * 获取chapterid对应的number
    */
 
-  getChapterNum(id) {
-    let number;
+  getChapterIndex(id) {
+    let i;
     const {dirList} = this.state;
     dirList.forEach((item, index) => {
-      if (item.chapterid == id) number = index + 1;
+      if (item.chapterid == id) i = index;
     });
-    return number;
+    return i;
   }
 
-  _formatChapter(content, num, title) {
+  _formatChapter(content, i, title) {
     const {navProps, dirList} = this.state;
     const {bookid} = navProps.bookInfo;
     let _arr =[]
@@ -257,7 +262,7 @@ export default class BookPages extends BasePage {
         total: _arrTemp.length,
         content,
         bookid,
-        chapter: dirList[num - 1],
+        chapter: dirList[i],
       }
       _arr.push(_chapterInfo)
     });
@@ -360,7 +365,6 @@ export default class BookPages extends BasePage {
 
   onChangeOptions(key, value) {
     let {options, currentDetail, chapterDetail, chapterinfoList, dirList} = this.state;
-
     //  值与原先相同时return
     if (options[key] == value) return;
     options[key] = value;
@@ -431,8 +435,8 @@ export default class BookPages extends BasePage {
       const content = val.chaptercontent;
       const title = val.chaptername;
       const chapterid = val.chapterid;
-      const number = this.getChapterNum(chapterid);
-      chapterDetail = chapterDetail.concat(this._formatChapter(content, number, title));
+      const index = this.getChapterIndex(chapterid);
+      chapterDetail = chapterDetail.concat(this._formatChapter(content, index, title));
     })
 
     for (let i = 0; i < chapterDetail.length; i++) {
@@ -619,6 +623,7 @@ export default class BookPages extends BasePage {
       showOptions: false,
     })
     if (chapter.chapterid == this.state.currentDetail.chapter.chapterid) return;
+    Toast.showLoading('请稍后');
     this.mountGetChapters(this.state.dirList, chapter.chapterid);
   }
 
@@ -639,8 +644,6 @@ export default class BookPages extends BasePage {
 
 
   onScroll(e) {
-    // console.log(e);
-    // console.log('e.nativeEvent.contentOffset.y', e.nativeEvent.contentOffset[this.state.options.scroll], AppSizes.screenHeight, AppSizes.screenWidth)
     const {scroll} = this.state.options;
     const {chapterDetail, dirList, loading, currentDetail, chapterinfoList} = this.state;
     const pageSize = scroll == 'y' ? AppSizes.screenHeight : AppSizes.screenWidth;
@@ -654,22 +657,63 @@ export default class BookPages extends BasePage {
       this.setState({
         currentDetail,
       })
+      this.getChaptersByScroll(currentDetail);
     }
     
-    console.log(currentDetail, chapterinfoList);
+  }
+
+  getChaptersByScroll(currentDetail) {
+    const {loading, chapterinfoList, dirList} = this.state;
     if (loading) return; // 防止重复请求
-    let type;
     let currentIndex;
     chapterinfoList.forEach((item, index) => {
       if (item.chapterid == currentDetail.chapter.chapterid) currentIndex = index;
     });
-    if (currentIndex == 1) {
-
-    } else if (currentIndex == chapterinfoList.length - 2) {
-
+    let chapters, type;
+    if (currentIndex == 0) {
+      if (chapterinfoList[0].chapterid == dirList[0].chapterid) {
+        if (currentDetail.num == 1) Toast.show('已经是第一章了');
+        return;
+      }
+      //  向前获取章节  prev
+      let i;
+      dirList.forEach((dir, index) => {
+        if (dir.chapterid == chapterinfoList[currentIndex].chapterid) i = index;
+      });
+      if (i == 1) {
+        chapters = [dirList[0].chapterid];
+      } else {
+        chapters = [
+          dirList[i - 1].chapterid,
+          dirList[i - 2].chapterid,
+        ]
+      }
+      type = 'prev';
+    } else if (currentIndex == chapterinfoList.length - 1) {
+      if (chapterinfoList[currentIndex].chapterid == dirList[dirList.length - 1].chapterid) {
+        if (currentDetail.num == currentDetail.total) Toast.show('已经是最后一章了');
+        return;
+      }
+      //  向后获取章节  next
+      let i;
+      dirList.forEach((dir, index) => {
+        if (dir.chapterid == chapterinfoList[currentIndex].chapterid) i = index;
+      })
+      if (i == dirList.length - 2) {
+        chapters = [
+          dirList[i + 1].chapterid,
+        ]
+      } else {
+        chapters = [
+          dirList[i + 1].chapterid,
+          dirList[i + 2].chapterid,
+        ]
+      }
+      type = 'next';
     } else {
       return;
     }
+    this.getChapters(chapters, type);
   }
 
   onPressBottom(type) {
@@ -702,7 +746,7 @@ export default class BookPages extends BasePage {
     const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail} = this.state;
     const {bookInfo} = navProps;
     const contentLenth = options.scroll == 'x' ? AppSizes.screenWidth : AppSizes.screenHeight;
-    console.log(currentDetail);
+    console.log('render currentdetail', currentDetail);
     return (
       <View style={{backgroundColor: options.color, flex: 1}}>
         <Animated.View

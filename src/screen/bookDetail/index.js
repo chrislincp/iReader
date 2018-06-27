@@ -98,10 +98,11 @@ export default class BookDetail extends BasePage {
     }  
   }
 
-  goToPages(bookInfo) {
+  goToPages(bookInfo, newest) {
     console.log(bookInfo);
     const props = {
       bookInfo,
+      newest
     }
     this.nav.push('BookPages', props);
   }
@@ -129,7 +130,7 @@ export default class BookDetail extends BasePage {
             </View>
           </View>
           <TouchableOpacity 
-            onPress={() => console.log('go last')}
+            onPress={() => this.goToPages(bookInfo, true)}
             style={{
               height: 40, 
               flexDirection: 'row', 
@@ -194,16 +195,28 @@ export default class BookDetail extends BasePage {
           <View style={styles.bookHotCommentWrap}>
             <View style={styles.bookHotCommentHeader}>
               <Text>热门书评</Text>
+              <TouchableOpacity
+                style={{
+                  height: 36,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingRight: 10,
+                  paddingLeft: 10
+                }}
+                onPress={() => this.nav.push('Comments', {id: bookInfo.bookid, title: bookInfo.bookname, total: bookInfo.commentcount})}
+                >
+                <Text style={{fontSize: 12, color: AppColors.themeColor}}>更多</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.bookHotCommentList}>
               {bookHotCommentList.map((item) => <CommentItem onPress={() => this.nav.push('DetailComment', item)} key={item.bookCommentid} item={item} />)}
-              <TouchableOpacity 
+              {/* <TouchableOpacity 
                 style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 36}}
                 onPress={() => this.nav.push('Comments', {id: bookInfo.bookid, title: bookInfo.bookname, total: bookInfo.commentcount})}
                 >
                 <Text style={[AppStyles.smallText, {marginRight: 5}]}>全部评论</Text>
                 <Icon name={IconName.downArrow} color={AppColors.themeColor} size={16} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View> : null}
           {bookSimilarList.length ?
@@ -213,6 +226,7 @@ export default class BookDetail extends BasePage {
               </View>
               <ScrollView 
                 horizontal
+                showsHorizontalScrollIndicator={false}
                 >
                 {bookSimilarList.map((item, index) => {
                   return (
@@ -357,7 +371,9 @@ const styles = StyleSheet.create({
   bookHotCommentHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    height: 36,
+    paddingLeft: 10,
+    alignItems: 'center',
   },
   similarBookWrap: {
     padding: 10,

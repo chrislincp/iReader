@@ -12,6 +12,7 @@ import TitleBar from './TitleBar';
 import CollectItem from './CollectItem';
 import Input from './Input';
 import AnimateModal from './AnimateModal';
+import Toast from './Toast';
 
 export {
   BasePage,
@@ -28,4 +29,5 @@ export {
   CollectItem,  
   Input,
   AnimateModal,
+  Toast,
 }
