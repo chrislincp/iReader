@@ -3,11 +3,10 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Text,
   StyleSheet,
 } from 'react-native';
 import { AppColors, AppStyles, AppSizes } from '../../themes';
-import { timeCompare } from '../../utils/utils';
+import Text from '../Text';
 
 export default class CollectItem extends React.Component {
   constructor(props) {

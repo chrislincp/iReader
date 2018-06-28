@@ -1,11 +1,11 @@
 import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { AppColors } from '../../themes';
+import Text from '../Text';
 
 export default class Tag extends React.Component {
   static propTypes = {

@@ -1,17 +1,14 @@
 import React from 'react';
 import {
   View,
-  ScrollView,
-  Text,
   TouchableOpacity,
   StyleSheet,
   FlatList,
   Image,
 } from 'react-native';
-import { BasePage, DataList, Icon } from '../../components';
+import { BasePage, Text } from '../../components';
 import { AppColors, AppSizes } from '../../themes';
 import { getBookDir } from './index.service';
-import IconName from '../../constants/IconName';
 import { ifIphoneX } from '../../utils/utils';
 
 export default class BookDir extends BasePage {

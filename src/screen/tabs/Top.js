@@ -2,13 +2,11 @@ import React from 'react';
 import {
   TouchableOpacity,
   View,
-  Image,
-  Text,
   StyleSheet,
   ScrollView,
   LayoutAnimation
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
+import { Text, BasePage, Icon } from '../../components';
 import {getTopList, getOtherList, getBookDetail, getOtherName} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppStyles } from '../../themes';
@@ -17,7 +15,7 @@ export default class Top extends BasePage {
   static navigationOptions = {
     tabBarLabel: '排行榜',
     tabBarIcon: ({ focused }) => (
-      <Icon name={IconName.stats} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor} />
+      <Icon name={focused ? IconName.stats : IconName.statsOutline} size={24} color={AppColors.themeColor} />
     ),
   };
   constructor(props) {

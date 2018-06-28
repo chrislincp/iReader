@@ -3,11 +3,8 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
-  Image,
-  Text,
-  StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem } from '../../components';
+import { DataList, Text, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem } from '../../components';
 import {getClassic, getRecommend, getClassicList, getRecommendList, getNewRecommend, getBookSort, getBookList, getBookListBySort} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppSizes, AppStyles } from '../../themes';
@@ -17,7 +14,7 @@ export default class BookMall extends BasePage {
   static navigationOptions = {
     tabBarLabel: '书城',
     tabBarIcon: ({ focused }) => (
-      <Icon name={IconName.ribbon} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor} />
+      <Icon name={focused ? IconName.ribbon : IconName.ribbonOutline} size={24} color={AppColors.themeColor} />
     ),
   };
   constructor(props) {

@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  Text,
-  StyleSheet,
   TouchableOpacity
 } from 'react-native';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
 import { AppSizes, AppColors } from '../../themes';
+import Text from '../Text';
+
 export default class ScrollTabView extends React.Component {
   constructor(props) {
     super(props);

@@ -4,7 +4,6 @@ import {
   ViewPropTypes,
   StyleSheet,
   View,
-  Text,
   ActivityIndicator,
   Animated,
   Dimensions,
@@ -14,6 +13,7 @@ import {
   Keyboard,
 } from 'react-native';
 import Indicator from '../Indicator';
+import Text from '../Text';
 
 const TOAST_MAX_WIDTH = 0.8;
 const TOAST_ANIMATION_DURATION = 200;
@@ -127,7 +127,7 @@ class ToastContainer extends React.Component {
     showText: PropTypes.bool,
     textColor: PropTypes.string,
     textFont: PropTypes.number,
-    textStyle: Text.propTypes.style,
+    // textStyle: Text.propTypes.style,
 
     onHide: PropTypes.func,
     onHidden: PropTypes.func,

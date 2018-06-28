@@ -1,13 +1,9 @@
 import React from 'react';
 import {
-  TouchableOpacity,
   View,
-  Image,
-  Text,
   StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
-import IconName from '../../constants/IconName';
+import { DataList, Header, BookItem, BasePage } from '../../components';
 import { AppColors } from '../../themes';
 
 export default class BookList extends BasePage {

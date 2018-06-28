@@ -1,15 +1,9 @@
 import React from 'react';
 import {
-  TouchableOpacity,
   View,
-  Image,
-  Text,
-  StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon } from '../../components';
-import {getNewRecommend, getBookDetail} from './index.service';
-import IconName from '../../constants/IconName';
-import { AppColors } from '../../themes';
+import { DataList, BookItem, BasePage } from '../../components';
+import {getNewRecommend} from './index.service';
 
 export default class Recommend extends BasePage {
   constructor(props) {

@@ -3,10 +3,9 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Text,
   StyleSheet,
 } from 'react-native';
-import { Tag, Icon } from '..';
+import { Text, Icon } from '..';
 import { AppColors, AppStyles } from '../../themes';
 import { timeCompare } from '../../utils/utils';
 import IconName from '../../constants/IconName';

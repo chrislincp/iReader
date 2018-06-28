@@ -1,16 +1,15 @@
 import React from 'react';
 import {
   View,
-  Text
 } from 'react-native';
-import { BasePage, Icon } from '../../components';
+import { BasePage, Icon, Text } from '../../components';
 import IconName from '../../constants/IconName';
 import { AppColors } from '../../themes';
 export default class BookRack extends BasePage {
   static navigationOptions = {
     tabBarLabel: '我的',
     tabBarIcon: ({ focused }) => (
-      <Icon name={IconName.person} size={24} color={focused ? AppColors.themeColor : AppColors.textTabInitColor}/>
+      <Icon name={focused ? IconName.person : IconName.personOutline} size={24} color={AppColors.themeColor}/>
     ),
   };
   constructor(props) {

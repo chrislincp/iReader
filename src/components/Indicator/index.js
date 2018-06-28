@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import {
   Platform,
   View,
-  Text,
   ActivityIndicator,
 } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
-
+import Text from '../Text';
 const CustomIndicator = Platform.OS === 'ios' ? MaterialIndicator : ActivityIndicator;
 
 export default class Indicator extends Component {

@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   View,
-  Text,
-  StyleSheet,
 } from 'react-native';
 import { BasePage, DataList, CommentItem, TitleBar } from '../../components';
 import { AppColors } from '../../themes';

@@ -3,10 +3,9 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Text,
   StyleSheet,
 } from 'react-native';
-import { Tag } from '..';
+import { Tag, Text } from '..';
 import { AppColors, AppStyles } from '../../themes';
 
 export default class BookItem extends React.Component {

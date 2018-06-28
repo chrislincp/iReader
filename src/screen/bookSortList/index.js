@@ -1,13 +1,8 @@
 import React from 'react';
 import {
-  TouchableOpacity,
   View,
-  Image,
-  Text,
-  StyleSheet,
 } from 'react-native';
-import { DataList, Header, BookItem, BasePage, Icon, ScrollableTabView } from '../../components';
-import IconName from '../../constants/IconName';
+import { DataList, BookItem, BasePage, ScrollableTabView } from '../../components';
 import { AppColors } from '../../themes';
 import { getBookSort } from './index.service';
 

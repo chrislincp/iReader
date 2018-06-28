@@ -2,12 +2,10 @@ import React from 'react';
 import {
   TouchableOpacity,
   View,
-  Text,
   StyleSheet
 } from 'react-native';
 import { AppColors, AppSizes } from '../../themes';
-import PropTypes from 'prop-types';
-import { Icon } from '..';
+import { Icon, Text } from '..';
 import IconName from '../../constants/IconName';
 export default class TitleBar extends React.Component {
   constructor(props) {

@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  View,
-  Text
-} from 'react-native';
 import RootStack from './navigator';
 import NavigatorService from './navigator/navigatorServer';
 

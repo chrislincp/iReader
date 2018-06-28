@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, StatusBar, Animated, Keyboard } from 'react-native';
+import { StyleSheet, View, StatusBar, Keyboard } from 'react-native';
 import { ifIphoneX, ifAndroid } from '../../utils/utils';
-import { withNavigation } from 'react-navigation';
 import Icon from '../Icon';
+import Text from '../Text';
 import IconName from '../../constants/IconName';
 import Sizes from '../../themes/Sizes';
 import NavigatorService from '../../navigator/navigatorServer';
-import { AppColors, AppSizes } from '../../themes';
 
 class Header extends Component {
   static propTypes = {

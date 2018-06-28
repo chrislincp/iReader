@@ -2,15 +2,13 @@ import React from 'react';
 import NavigatorServer from '../../navigator/navigatorServer';
 import {
   View,
-  TextInput,
-  Text,
   TouchableOpacity,
   ScrollView,
   StyleSheet,
   Keyboard,
 } from 'react-native';
 import {
-  BasePage, Icon, DataList, BookItem, Input,
+  BasePage, Icon, DataList, BookItem, Input, Text
 } from '../../components';
 import IconName from '../../constants/IconName';
 import { AppColors, AppStyles, AppSizes } from '../../themes';

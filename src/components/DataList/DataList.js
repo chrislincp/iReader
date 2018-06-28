@@ -2,12 +2,12 @@ import React from 'react';
 import {
   FlatList,
   ActivityIndicator,
-  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ErrorPage from '../ErrorPage';
 import LoadingStatus from '../LoadingStatus';
 // import { errorImg, netErrorImg, noDataList } from './index.image';
+import Text from '../Text';
 
 export default class DataList extends React.Component {
     static propTypes = {

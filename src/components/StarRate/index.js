@@ -4,9 +4,9 @@ import { Icon } from '..';
 import IconName from '../../constants/IconName';
 import {
   View,
-  Text,
 } from 'react-native';
 import { AppColors } from '../../themes';
+import Text from '../Text';
 
 export default class StarRate extends React.Component {
   static proptypes = {

@@ -5,8 +5,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { AppColors, AppStyles } from '../../themes';
+import Text from '../Text';
 
 const Icons = ({
   name, size, color, style, iconStyle, onPress, text, textStyle

@@ -1,14 +1,12 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { AppColors } from '../../themes';
-// import { ifAndroid } from '../util/Utils';
-// import { ifIphoneX } from '../../utils/utils';
+import Text from '../Text';
 
 export default class ErrorPage extends React.Component {
     static propTypes = {

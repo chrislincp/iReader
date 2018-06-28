@@ -33,7 +33,7 @@ class DeviceStorage {
    * @returns {*}
    */
   static save(key, value) {
-    return AsyncStorage.setItem(key, JSON.stringify(value));
+    return AsyncStorage.setItem(key, JSON.stringify(value)).then(value => value);
   }
 
 
