@@ -3,13 +3,17 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
+  FlatList,
+  RefreshControl,
+  DeviceEventEmitter,
 } from 'react-native';
 import { DataList, Text, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem } from '../../components';
 import {getClassic, getRecommend, getClassicList, getRecommendList, getNewRecommend, getBookSort, getBookList, getBookListBySort} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppSizes, AppStyles } from '../../themes';
 import LoadingStatus from '../../components/LoadingStatus';
-import { timeCompare } from '../../utils/utils';
+import Store from '../../store';
+import store from '../../store';
 export default class BookMall extends BasePage {
   static navigationOptions = {
     tabBarLabel: '书城',
@@ -20,10 +24,15 @@ export default class BookMall extends BasePage {
   constructor(props) {
     super(props);
     this.state = {
+      sex: Store.common.sex,
       recommendLoading: true,
+      recommendRefresh: false,
       mostNewLoading: true,
+      mostNewRefresh: false,
       bookListLoading: true,
+      bookListRefresh: false,
       bookSortLoading: true,
+      bookSortRefresh: false,
       bookListOpt: {
         good: 0,
         order: 0
@@ -39,7 +48,7 @@ export default class BookMall extends BasePage {
 
   componentDidMount() {
     this.getRecommendPage();
-    // this.getMostNewListPage();
+    this.getMostNewListPage();
     this.getBookListPage();
     this.getBookSortListPage();
   }
@@ -47,8 +56,8 @@ export default class BookMall extends BasePage {
   // 获取推荐
   getRecommendPage() {
     Promise.all([
-      getClassic({sex: 1}),
-      getRecommend({sex: 1})
+      getClassic(),
+      getRecommend()
     ]).then(res => {
       console.log('recommend res', res);
       if (res[0].success == 1) {
@@ -63,28 +72,42 @@ export default class BookMall extends BasePage {
       }
       this.setState({
         recommendLoading: false,
+        recommendRefresh: false,
       })
     }).catch(err => {
       this.setState({
         recommendLoading: false,
+        recommendRefresh: false,
       })
     })
   }
 
+  refreshRecommend() {
+    this.setState({ recommendRefresh: true });
+    this.getRecommendPage();
+  }
+
   // 获取最新
   getMostNewListPage() {
-    getNewRecommend({sex: 1}).then(res => {
+    getNewRecommend().then(res => {
       if (res.success == 1) {
         this.setState({
           mostNewLoading: false,
+          mostNewRefresh: false,
           mostNewList: res.booklist,
         })
       }
     }).catch(err => {
       this.setState({
         mostNewLoading: false,
+        mostNewRefresh: false,
       })
     })
+  }
+
+  refreshMostNewList() {
+    this.setState({ mostNewRefresh: true })
+    this.getMostNewListPage();
   }
 
   // 获取书单
@@ -105,34 +128,79 @@ export default class BookMall extends BasePage {
       }
       this.setState({
         bookListLoading: false,
+        bookListRefresh: false,
       })
     }).catch(err => {
       this.setState({
         bookListLoading: false,
+        bookListRefresh: false,
       })
     })
   }
 
+  refreshBookList() {
+    this.setState({ bookListRefresh: true });
+    this.getBookListPage();
+  }
+
   // 获取分类
   getBookSortListPage() {
-    getBookSort({sex: 1}).then(res => {
+    getBookSort().then(res => {
       if (res.success == 1) {
         this.setState({
           bookSortList: res.sortlist,
           bookSortLoading: false,
+          bookSortRefresh: false,
         })
       }
     }).catch(err => {
       this.setState({
         bookSortLoading: false,
+        bookSortRefresh: false,
       })
     })
   }
 
+  refreshBookSortList() {
+    this.setState({ bookSortRefresh: true });
+    this.getBookSortListPage();
+  }
+
   _headerProps() {
+    const {sex} = this.state;
     return {
-      title: '书城',
+      // title: '书城',
       left: <View />,
+      title: (
+        <View
+          style={{flexDirection: 'row', alignSelf: 'center'}}
+          >
+          <TouchableOpacity
+            style={{
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+            }}
+            onPress={() => this.onChangeSex(1)}
+            >
+            <Text style={{color: sex == 1 ? AppColors.lightBlue : AppColors.textTabInitColor}}>男生</Text>
+            <View style={{marginTop: 8,  height: sex == 1 ? 2 : 0, backgroundColor: AppColors.lightBlue}}></View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingLeft: 20,
+              paddingRight: 20,
+              paddingTop: 10,
+              paddingBottom: 10,
+            }}
+            onPress={() => this.onChangeSex(2)}
+            >
+            <Text style={{color: sex == 2 ? AppColors.danger : AppColors.textTabInitColor}}>女生</Text>
+            <View style={{marginTop: 8, height: sex == 2 ? 2 : 0, backgroundColor: AppColors.danger}}></View>
+          </TouchableOpacity>
+        </View>
+      ),
       right: (
       <Icon 
         onPress={() => this.nav.push('Search')}
@@ -145,6 +213,16 @@ export default class BookMall extends BasePage {
         />
       )
     }
+  }
+
+  onChangeSex(sex) {
+    this.setState({ sex });
+    store.setCommon('sex', sex);
+    this.refreshRecommend();
+    this.refreshMostNewList();
+    this.refreshBookList();
+    this.refreshBookSortList();
+    DeviceEventEmitter.emit('sexChange');
   }
 
   _renderItem = item => <BookItem key={item.bookid} item={item} onPress={() => this.goDetail(item.bookid)} />
@@ -193,7 +271,14 @@ export default class BookMall extends BasePage {
             >
           <View style={{ backgroundColor: 'white', flex: 1}} tabLabel="推荐">
             {recommendLoading ? <LoadingStatus /> :
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.recommendRefresh}
+                  onRefresh={() => this.refreshRecommend()}
+                 />
+                }
+              >
               <TitleBar 
                 title="畅销精选"
                 onPress={() => this.nav.push('BookList', {title: '畅销精选', options: {}, service: getClassicList})}
@@ -207,21 +292,25 @@ export default class BookMall extends BasePage {
             </ScrollView>}
           </View>
           <View tabLabel="最新">
-            {/* {mostNewLoading ? <LoadingStatus /> :
-            <ScrollView>
-              {mostNewList.map(item => this._renderItem(item))}
-            </ScrollView>} */}
-            <DataList 
-              noMoreLoading
-              options={{sex: 1}}
-              service={getNewRecommend}
-              convertData={res => res.booklist}
-              renderItem={(item) => this._renderItem(item)}
-            />
+            {mostNewLoading ? <LoadingStatus /> :
+            <FlatList 
+              refreshing={this.state.mostNewRefresh}
+              onRefresh={() => this.refreshMostNewList()}
+              data={mostNewList}
+              renderItem={({item}) => this._renderItem(item)}
+              keyExtractor={(item, index) => index.toString()}
+            />}
           </View>
           <View tabLabel="书单">
           {bookListLoading ? <LoadingStatus /> :
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.bookListRefresh}
+                  onRefresh={() => this.refreshBookList()}
+                />
+                }
+              >
               <TitleBar title="最新发布" onPress={() => this.nav.push('CollectList', {title: '最新发布', options: {good: 0, order: 0}})} />
               {newBookList.map(item => this._renderBookListItem(item))}
               <TitleBar title="最多收藏" onPress={() => this.nav.push('CollectList', {title: '最多收藏', options: {good: 0, order: 1}})} />
@@ -230,7 +319,14 @@ export default class BookMall extends BasePage {
           </View>
           <View tabLabel="分类">
             {bookSortLoading ? <LoadingStatus /> :
-              <ScrollView>
+              <ScrollView     
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.bookSortRefresh}
+                    onRefresh={() => this.refreshBookSortList()}
+                  />
+                  }
+                >
                 {bookSortList.map(item => this._renderSortItem(item))}
               </ScrollView>
             }

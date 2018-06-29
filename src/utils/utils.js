@@ -2,6 +2,7 @@ import { Dimensions, Linking, PixelRatio, Platform, Toast } from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
 import { AppSizes } from '../themes';
+import DeviceStorage from './deviceStorage';
 
 const deviceWidth = Dimensions.get('window').width; // 设备的宽度
 const deviceHeight = Dimensions.get('window').height; // 设备的高度
@@ -101,3 +102,80 @@ export const formatterChapter = (info) => {
     }
   }
 }
+
+export const joinRack = (book) => {
+  return new Promise((resove, reject) => {
+    DeviceStorage.get('rackList').then(res => {
+      let data = res || [];
+      data.push(book);
+      DeviceStorage.save('rackList', data).then(() => resove());
+    })
+  })
+}
+
+export const removeRack = (bookid) => {
+  return new Promise((resove, reject) => {
+    DeviceStorage.get('rackList').then(res => {
+      let data = res || [];
+      let i;
+      data.forEach((item, index) => {
+        if (item.bookInfo.bookid == bookid) i = index;
+      })
+      data.splice(i, 1);
+      DeviceStorage.save('rackList', data).then(() => resove());
+    })
+  })
+}
+
+export const checkBookRack = (bookid) => {
+  //  检验是否已在书架
+  return new Promise((resove, reject) => {
+    DeviceStorage.get('rackList').then(res => {
+      let exist = false;
+      let data = res || [];
+      let i;
+      data.forEach((item, index) => {
+        if (item.bookInfo.bookid == bookid) {
+          exist = true;
+          i = index;
+        }
+      })
+      const opt = exist ? {exist, data: data[i]} : {exist}
+      resove(opt)
+    })
+  })
+}
+
+export const setTopRackBook = bookid => {
+  return new Promise((resove, reject) => {
+    DeviceStorage.get('rackList').then(res => {
+      let data = res || [];
+      let index, opt;
+      data.forEach((item, i) => {
+        console.log(item);
+        if (item.bookInfo.bookid == bookid) {
+          index = i;
+          opt = item;
+        }
+      })
+      data.splice(index, 1);
+      data.push(opt);
+      DeviceStorage.save('rackList', data).then(() => resove());
+    })
+  })
+}
+
+export const getSex = () => {
+  return new Promise((resove, reject) => {
+    DeviceStorage.get('sex').then(res => {
+      if (res == null) {
+        DeviceStorage.save('sex', 1);
+        resove(1);
+      } else {
+        resove(res);
+      }
+    })
+  })
+}
+
+

@@ -1,20 +1,29 @@
 import axios from 'axios';
 import qs from 'qs';
+import { getSex } from './utils';
+import Store from '../store';
 
 const httpFactory = method => async (url, params = {}) => {
+  console.log(Store.common.sex)
   return new Promise((resove, reject) => {
-    console.log(url, params);
+    let opts = Object.assign({}, params, {sex: Store.common.sex});
+    console.log(url, opts);
+
     if (method == 'Get') {
-      axios.get(url, params).then(res => {
+      axios.get(url, opts).then(res => {
         console.log(res.data);
-        resove(res.data);
+        if (res.data.success == 1) {
+          resove(res.data);
+        }
       }).catch(err => {
         reject(res);
       })
     } else if (method == 'Post') {
-      axios.post(url, qs.stringify(params)).then(res => {
+      axios.post(url, qs.stringify(opts)).then(res => {
         console.log(res.data);
-        resove(res.data);
+        if (res.data.success == 1) {
+          resove(res.data);
+        }
       }).catch(err => {
         console.log(err);
         reject(err);
