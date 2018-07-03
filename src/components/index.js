@@ -14,6 +14,7 @@ import Input from './Input';
 import AnimateModal from './AnimateModal';
 import Toast from './Toast';
 import Text from './Text';
+import Image from './Image';
 
 export {
   BasePage,
@@ -32,4 +33,5 @@ export {
   AnimateModal,
   Toast,
   Text,
+  Image,
 }

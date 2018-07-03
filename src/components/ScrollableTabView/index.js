@@ -13,20 +13,31 @@ export default class ScrollTabView extends React.Component {
   }
 
   render() {
-    const { style, children, contentStyle, tabStyle } = this.props;
+    const { 
+      style, 
+      children, 
+      underlineStyle, 
+      defaultBarStyle, 
+      contentStyle, 
+      tabStyle, 
+      activeColor, 
+      initColor,
+      renderTab,
+    } = this.props;
     return (
       <ScrollableTabView
         style={style}
-        tabBarUnderlineStyle={{
-          display: 'none',
+        tabBarUnderlineStyle={[{
+          // display: 'none',
           width: 0,
           height: 0,
-        }}
+        }, underlineStyle]}
         renderTabBar={() => (
           <DefaultTabBar
-            style={{borderWidth: AppSizes.hairLineWidth, borderColor: AppColors.dividersColor}}
-            renderTab={(name, pageIndex, isTabActive, goToPage) => (
-              <TouchableOpacity
+            style={[{borderWidth: AppSizes.hairLineWidth, borderColor: AppColors.dividersColor}, defaultBarStyle]}
+            renderTab={(name, pageIndex, isTabActive, goToPage) => {
+              return renderTab ? renderTab(name, pageIndex, isTabActive, goToPage) :
+              (<TouchableOpacity
                 key={pageIndex}
                 onPress={() => {
                   goToPage(pageIndex);
@@ -40,8 +51,8 @@ export default class ScrollTabView extends React.Component {
                 <Text style={{ color: isTabActive ? AppColors.themeColor : AppColors.textTabInitColor }}>
                   {name}
                 </Text>
-              </TouchableOpacity>
-            )}
+              </TouchableOpacity>)
+            }}
           />
         )}
         >

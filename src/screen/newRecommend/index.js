@@ -32,7 +32,6 @@ export default class Recommend extends BasePage {
       <View style={{backgroundColor: 'white', flex: 1}}>
         <DataList 
           noMoreLoading
-          options={{sex: 1}}
           service={getNewRecommend}
           convertData={res => res.booklist}
           renderItem={(item) => this._renderItem(item)}

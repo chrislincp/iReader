@@ -4,13 +4,12 @@ import {
   ViewPropTypes,
   StyleSheet,
   View,
-  ActivityIndicator,
   Animated,
   Dimensions,
   TouchableWithoutFeedback,
   Easing,
-  Image,
   Keyboard,
+  Image,
 } from 'react-native';
 import Indicator from '../Indicator';
 import Text from '../Text';

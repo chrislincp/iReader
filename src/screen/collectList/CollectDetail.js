@@ -1,12 +1,12 @@
 import React from 'react';
 import {
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from 'react-native';
-import { BasePage, Text } from '../../components';
+import { BasePage, Text, } from '../../components';
 import { AppStyles, AppColors, AppSizes } from '../../themes';
 import { getCollectDetail } from './index.service';
 import { timeCompare } from '../../utils/utils';

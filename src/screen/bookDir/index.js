@@ -3,11 +3,11 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
   Image,
+  FlatList,
 } from 'react-native';
-import { BasePage, Text } from '../../components';
-import { AppColors, AppSizes } from '../../themes';
+import { BasePage, Text, } from '../../components';
+import { AppColors } from '../../themes';
 import { getBookDir } from './index.service';
 import { ifIphoneX } from '../../utils/utils';
 

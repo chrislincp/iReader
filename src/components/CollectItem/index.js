@@ -2,8 +2,8 @@ import React from 'react';
 import {
   TouchableOpacity,
   View,
-  Image,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { AppColors, AppStyles, AppSizes } from '../../themes';
 import Text from '../Text';

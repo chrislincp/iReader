@@ -10,9 +10,7 @@ export default class BookList extends BasePage {
   constructor(props) {
     super(props);
     this.state = {
-      options: {
-        sex: 1,
-      },
+      options: {},
     };
   }
 

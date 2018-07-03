@@ -1,9 +1,9 @@
 import React from 'react';
-import { BasePage, DataList, Text } from '../../components';
+import { BasePage, DataList, Text, } from '../../components';
 import {
   View,
-  Image,
   StyleSheet,
+  Image,
 } from 'react-native';
 import { AppColors, AppSizes, AppStyles } from '../../themes';
 import { getBookCommentReply, getBookCommentDetail } from './index.service';

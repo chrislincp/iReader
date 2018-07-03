@@ -2,10 +2,10 @@ import React from 'react';
 import {
   TouchableOpacity,
   View,
-  Image,
   StyleSheet,
+  Image,
 } from 'react-native';
-import { DataList, BasePage, Text } from '../../components';
+import { DataList, BasePage, Text, } from '../../components';
 import { getBookList } from './index.service';
 import { AppStyles } from '../../themes';
 export default class BookList extends BasePage {
