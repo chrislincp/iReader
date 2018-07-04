@@ -7,28 +7,28 @@ import {
   RefreshControl,
   DeviceEventEmitter,
 } from 'react-native';
-import { DataList, Text, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem } from '../../components';
+import { DataList, Text, BookItem, BasePage, Icon, ScrollableTabView, TitleBar, CollectItem, Toast } from '../../components';
 import {getClassic, getRecommend, getClassicList, getRecommendList, getNewRecommend, getBookSort, getBookList, getBookListBySort} from './index.service';
 import IconName from '../../constants/IconName';
 import { AppColors, AppSizes, AppStyles } from '../../themes';
 import LoadingStatus from '../../components/LoadingStatus';
 import Store from '../../store';
 import store from '../../store';
+import { getSex } from '../../utils/utils';
 export default class BookMall extends BasePage {
   static navigationOptions = {
     tabBarLabel: '书城',
     tabBarIcon: ({ focused }) => (
-      <Icon name={focused ? IconName.ribbon : IconName.ribbonOutline} size={24} color={AppColors.themeColor} />
+      <Icon name={focused ? IconName.home : IconName.homeOutline} size={24} color={AppColors.themeColor} />
     ),
   };
   constructor(props) {
     super(props);
     this.state = {
-      sex: Store.common.sex,
+      sex: '',
       recommendLoading: true,
       recommendRefresh: false,
       mostNewLoading: true,
-      mostNewRefresh: false,
       bookListLoading: true,
       bookListRefresh: false,
       bookSortLoading: true,
@@ -47,6 +47,9 @@ export default class BookMall extends BasePage {
   }
 
   componentDidMount() {
+    if (Store.common.sex) this.setState({ sex: Store.common.sex });
+    else getSex().then(sex => this.setState({ sex }));
+
     this.getRecommendPage();
     this.getMostNewListPage();
     this.getBookListPage();
@@ -89,25 +92,18 @@ export default class BookMall extends BasePage {
 
   // 获取最新
   getMostNewListPage() {
-    getNewRecommend().then(res => {
+    getNewRecommend({sex: 1}).then(res => {
       if (res.success == 1) {
         this.setState({
           mostNewLoading: false,
-          mostNewRefresh: false,
           mostNewList: res.booklist,
         })
       }
     }).catch(err => {
       this.setState({
         mostNewLoading: false,
-        mostNewRefresh: false,
       })
     })
-  }
-
-  refreshMostNewList() {
-    this.setState({ mostNewRefresh: true })
-    this.getMostNewListPage();
   }
 
   // 获取书单
@@ -216,10 +212,15 @@ export default class BookMall extends BasePage {
   }
 
   onChangeSex(sex) {
+    const {recommendRefresh, bookListRefresh, bookSortRefresh} = this.state;
+    if (sex == this.state.sex) return;
+    if (recommendRefresh || bookListRefresh || bookSortRefresh) {
+      Toast.show('数据加载中');
+      return;
+    }
     this.setState({ sex });
     store.setCommon('sex', sex);
     this.refreshRecommend();
-    this.refreshMostNewList();
     this.refreshBookList();
     this.refreshBookSortList();
     DeviceEventEmitter.emit('sexChange');
@@ -294,8 +295,6 @@ export default class BookMall extends BasePage {
           <View tabLabel="最新">
             {mostNewLoading ? <LoadingStatus /> :
             <FlatList 
-              refreshing={this.state.mostNewRefresh}
-              onRefresh={() => this.refreshMostNewList()}
               data={mostNewList}
               renderItem={({item}) => this._renderItem(item)}
               keyExtractor={(item, index) => index.toString()}
