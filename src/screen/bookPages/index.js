@@ -1,23 +1,24 @@
 import React from 'react';
 
 import {
-  Header, BasePage, Icon, AnimateModal, Toast,
+  Header, BasePage, Icon, AnimateModal, Toast, Text,
 } from '../../components';
 import {
   View,
-  Text,
   Animated,
   LayoutAnimation,
   TouchableOpacity,
   StyleSheet,
   StatusBar,
   FlatList,
-  Image,
   Slider,
+  Alert,
+  Image,
+  DeviceEventEmitter
 } from 'react-native';
 import { AppColors, AppSizes } from '../../themes';
 import { getBookDirectory, getBookChapter } from './index.service';
-import { ifIphoneX, ifAndroid } from '../../utils/utils';
+import { ifIphoneX, checkBookRack, setTopRackBook } from '../../utils/utils';
 import IconName from '../../constants/IconName';
 import DeviceStorage from '../../utils/deviceStorage';
 
@@ -48,7 +49,8 @@ export default class BookPages extends BasePage {
       dirList: [],
       chapterDetail: [],
       order: false,
-      loading: false
+      loading: false,
+      initialIndex: 0,
     }
   }
   _renderHeader() {
@@ -57,12 +59,58 @@ export default class BookPages extends BasePage {
 
   componentDidMount() {
     this.getLocalOptions();
-    const {bookInfo, chapterid, dirList, newest} = this.state.navProps;
-    if (dirList) {
-      this.setState({dirList});
-      let id = newest ? dirList[dirList.length -1].chapterid : chapterid;
-      this.mountGetChapters(dirList, id);
+    const {bookInfo, chapterid, dirList, newest, from} = this.state.navProps;
+    console.log(from);
+    checkBookRack(bookInfo.bookid).then(res => {
+      console.log('book page check', res)
+      if (res.exist) {  //  当书架存在  设置本书在书架最上方
+        setTopRackBook(bookInfo.bookid).then(() => {
+          if (from == 'rack') {
+            this.renderFromRack(res.data);
+          } else {
+            if (dirList) {
+              this.setState({dirList});
+              let id = newest ? dirList[dirList.length -1].chapterid : chapterid;
+              this.mountGetChapters(dirList, id);
+            } else {
+              this.getDirList();
+            }
+          }
+        });
+      } else {
+        if (dirList) {
+          this.setState({dirList});
+          let id = newest ? dirList[dirList.length -1].chapterid : chapterid;
+          this.mountGetChapters(dirList, id);
+        } else {
+          this.getDirList();
+        }
+      }
+    })
+  }
+
+  renderFromRack(data) {
+    //  有阅读内容数据
+    console.log(data);
+    if (data.currentDetail) {
+      let i;
+      data.chapterDetail.forEach((item, index) => {
+        if (item.chapter.chapterid == data.currentDetail.chapter.chapterid && item.num == data.currentDetail.num) i = index;
+      })
+      this.setState({
+        currentDetail: data.currentDetail,
+        chapterDetail: data.chapterDetail,
+        dirList: data.dirList,
+        chapterinfoList: data.chapterinfoList,
+        initialIndex: i,
+        screenState: 'success',
+      })
+      console.log(i)
+      // setTimeout(() => {
+      //   this.refs.contentList.scrollToIndex({index: i, animated: false});
+      // });
     } else {
+      //  无阅读内容数据  来自于书籍详情
       this.getDirList();
     }
   }
@@ -94,7 +142,6 @@ export default class BookPages extends BasePage {
   componentWillUnmount(){
     StatusBar.setHidden(false);
     StatusBar.setBarStyle('dark-content');
-    this.saveLocalOptions();
   }
 
 
@@ -201,6 +248,7 @@ export default class BookPages extends BasePage {
 
       
       let currentDetail = {};
+      let initialIndex = 0;
       if (mount) {
         switch (status) {
           case 'first':
@@ -208,9 +256,11 @@ export default class BookPages extends BasePage {
           break;
           case 'center':
             currentDetail = chapterDetail[contentsLen[0]];
+            initialIndex = contentsLen[0];
           break;
           case 'last':
             currentDetail = chapterDetail[contentsLen[0]];
+            initialIndex = contentsLen[0];
           break;
         }
         this.setState({ currentDetail });       
@@ -219,11 +269,10 @@ export default class BookPages extends BasePage {
         loading: false,
         chapterDetail,
         chapterinfoList,
+        initialIndex,
         screenState: 'success',
       });
-      if (mount) {
-        if (status == 'last' || status == 'center') this.refs.contentList.scrollToIndex({index: contentsLen[0], animated: false});
-      } else {
+      if (this.refs.contentList) {
         chapterDetail.forEach((item, index) => {
           if (item.chapter.chapterid == this.state.currentDetail.chapter.chapterid && item.num == this.state.currentDetail.num) {
             this.refs.contentList.scrollToIndex({index, animated: false});
@@ -347,7 +396,7 @@ export default class BookPages extends BasePage {
             <Text style={{lineHeight, fontSize}} key={index}>{line}</Text>
           ))}
           </View>
-          <Text style={{lineHeight: 20, textAlign: 'center'}}>{`${currentDetail.num} / ${currentDetail.total}`}</Text>
+          <Text style={{lineHeight: 20, textAlign: 'center'}}>{`${item.num} / ${item.total}`}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -356,6 +405,7 @@ export default class BookPages extends BasePage {
   toggleModal(bool) {
     LayoutAnimation.easeInEaseOut();
     StatusBar.setHidden(this.state.showOptions)
+    if (bool) StatusBar.setBarStyle('light-content');
     this.setState({
       showOptions: bool,
       showOptsModal: false,
@@ -369,6 +419,7 @@ export default class BookPages extends BasePage {
     if (options[key] == value) return;
     options[key] = value;
     this.setState({ options });
+    this.saveLocalOptions();
     switch (key) {
       case 'scroll':
         //  当改变阅读模式  保持在当前页
@@ -645,7 +696,7 @@ export default class BookPages extends BasePage {
 
   onScroll(e) {
     const {scroll} = this.state.options;
-    const {chapterDetail, dirList, loading, currentDetail, chapterinfoList} = this.state;
+    const {chapterDetail, dirList, loading, currentDetail, chapterinfoList, navProps} = this.state;
     const pageSize = scroll == 'y' ? AppSizes.screenHeight : AppSizes.screenWidth;
     const scrollVal = e.nativeEvent.contentOffset[scroll] / pageSize;
     
@@ -658,6 +709,9 @@ export default class BookPages extends BasePage {
         currentDetail,
       })
       this.getChaptersByScroll(currentDetail);
+      checkBookRack(navProps.bookInfo.bookid).then(res => {
+        if (res.exist) this.coverRackData();
+      })
     }
     
   }
@@ -716,6 +770,94 @@ export default class BookPages extends BasePage {
     this.getChapters(chapters, type);
   }
 
+
+  leavePages() {
+    checkBookRack(this.state.navProps.bookInfo.bookid).then(res => {
+      if (res.exist) {
+        this.nav.goBack();
+      } else {
+        Alert.alert('提示', '是否要加入书架', [
+          {text: '取消', onPress: () => this.nav.goBack()},
+          {text: '确定', onPress: () => this.joinRack()}
+        ])
+      }
+    })
+  }
+
+
+  coverRackData() {
+    console.log('convert rack data')
+    return new Promise((resove, reject) => {
+      const {currentDetail, dirList, chapterinfoList, navProps} = this.state;
+      const {bookInfo} = navProps;
+      let newChapterinfoList = [];
+      let chapterDetail  = [];
+  
+      //  处理chapterinfoList
+      chapterinfoList.forEach((item, index) => {
+        if (item.chapterid == currentDetail.chapter.chapterid) {
+          if (index == 0) {
+            newChapterinfoList = [
+              chapterinfoList[index],
+              chapterinfoList[index + 1],
+            ]
+          } else if (index == chapterinfoList.length - 1) {
+             newChapterinfoList = [
+              chapterinfoList[index - 1],
+              chapterinfoList[index],
+             ]
+          } else {
+            newChapterinfoList = [
+              chapterinfoList[index - 1],
+              chapterinfoList[index],
+              chapterinfoList[index + 1],
+             ]
+          }
+        }
+      })
+  
+      // 处理chapterdetail
+      newChapterinfoList.forEach(val => {
+        const content = val.chaptercontent;
+        const title = val.chaptername;
+        const chapterid = val.chapterid;
+        const index = this.getChapterIndex(chapterid);
+        chapterDetail = chapterDetail.concat(this._formatChapter(content, index, title));
+      })
+  
+      const opts = {
+        currentDetail,
+        dirList,
+        bookInfo,
+        chapterinfoList: newChapterinfoList,
+        chapterDetail,
+      }
+      let data;
+      DeviceStorage.get('rackList').then(res => {
+        data = res || [];
+        let exist = false;
+        data.forEach((item, index) => {
+          if (item.bookInfo.bookid == bookInfo.bookid) {
+            exist = true;
+            data[index] = opts;
+          }
+        })
+        if (!exist) data.push(opts);
+        DeviceStorage.save('rackList', data);
+        DeviceEventEmitter.emit('updateRack');
+        resove();
+      })
+    })
+  }
+
+  joinRack() {
+    this.coverRackData().then(() => {
+      Toast.showSuccess('加入成功');
+      DeviceEventEmitter.emit('joinRack');
+      this.nav.goBack();
+    });
+  }
+
   onPressBottom(type) {
     const {navProps, dirList, currentDetail} = this.state;
     const {bookInfo} = navProps;
@@ -743,10 +885,10 @@ export default class BookPages extends BasePage {
   }
 
   _render() {
-    const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail} = this.state;
+    const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail, initialIndex} = this.state;
     const {bookInfo} = navProps;
     const contentLenth = options.scroll == 'x' ? AppSizes.screenWidth : AppSizes.screenHeight;
-    console.log('render currentdetail', currentDetail);
+    console.log('render currentdetail', currentDetail, initialIndex);
     return (
       <View style={{backgroundColor: options.color, flex: 1}}>
         <Animated.View
@@ -763,6 +905,7 @@ export default class BookPages extends BasePage {
             fontColor="white" 
             style={{backgroundColor: 'rgba(0,0,0,0.8)'}}
             title={currentDetail.title}
+            leftPress={() => this.leavePages()}
             />
         </Animated.View>
         <FlatList 
@@ -777,6 +920,7 @@ export default class BookPages extends BasePage {
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => this._renderChapter(item)}
           keyExtractor={(item, index) => (index).toString()}
+          initialScrollIndex={initialIndex}
           />
         <Animated.View
           style={[{

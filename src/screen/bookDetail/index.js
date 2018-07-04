@@ -1,20 +1,19 @@
 import React from 'react';
-import { BasePage, StarRate, Icon, Header, Tag, CommentItem } from '../../components';
+import { BasePage, StarRate, Icon, Text, Tag, CommentItem, Toast, } from '../../components';
 import {
   ScrollView,
   View,
-  Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   LayoutAnimation,
   Animated,
+  DeviceEventEmitter,
+  Image,
 } from 'react-native';
-import LoadingStatus from '../../components/LoadingStatus';
-import { getBookDetail, getBookHotComment, getSimiarBook, getBookDir } from './index.service';
+import { getBookDetail, getBookHotComment, getSimiarBook } from './index.service';
 import { AppColors, AppStyles } from '../../themes';
 import IconName from '../../constants/IconName';
-import { timeCompare, ifIphoneX } from '../../utils/utils';
+import { timeCompare, ifIphoneX, joinRack, removeRack, checkBookRack } from '../../utils/utils';
 export default class BookDetail extends BasePage {
   constructor(props) {
     super(props);
@@ -26,10 +25,15 @@ export default class BookDetail extends BasePage {
       noMoreDesc: true,
       showMoreDesc: false,
       opacity: 0,
+      exist: false,
     }
   }
 
   componentDidMount() {
+    this.checkRack();
+    //  监听是否加入书架
+    this.rackEmit = DeviceEventEmitter.addListener('joinRack', () => this.checkRack());
+
     const {id} = this.nav.state.params;
     Promise.all([
       getBookDetail({bookid: id}),
@@ -70,10 +74,21 @@ export default class BookDetail extends BasePage {
     })
   }
 
+  componentWillUnmount() {
+    this.rackEmit.remove();
+  }
+
   _headerProps() {
     return {
       title: '书籍详情',
     }
+  }
+
+  checkRack() {
+    const {id} = this.nav.state.params;
+    checkBookRack(id).then(res => {
+      this.setState({exist: res.exist});
+    })
   }
 
   toggoleDesc() {
@@ -106,9 +121,28 @@ export default class BookDetail extends BasePage {
     }
     this.nav.push('BookPages', props);
   }
+
+  isJoinRack(exist) {
+    console.log('is join rack', exist);
+    const {bookInfo} = this.state;
+    if (exist) {
+      removeRack(bookInfo.bookid).then(() => {
+        Toast.showSuccess('移除成功');
+        this.setState({exist: false});
+        DeviceEventEmitter.emit('removeRack');
+      });
+    } else {
+      const book = { bookInfo };
+      joinRack(book).then(() => {
+        Toast.showSuccess('加入成功')
+        this.setState({exist: true})
+        DeviceEventEmitter.emit('joinRack');
+      });
+    }
+  }
   
   _render() {
-    const { opacity, bookInfo, bookSimilarList, bookHotCommentList, showMoreDesc, noMoreDesc } = this.state;
+    const { opacity, bookInfo, bookSimilarList, bookHotCommentList, showMoreDesc, noMoreDesc, exist } = this.state;
     return (
       <View style={{flex: 1, backgroundColor: AppColors.backgroundColor}}>
         <ScrollView style={{marginBottom: ifIphoneX(60, 40)}}>
@@ -166,7 +200,6 @@ export default class BookDetail extends BasePage {
             <Text>简介</Text>
             <Animated.View style={[styles.desc]}>
               <Text 
-                ref="desc"
                 onLayout={(e) => this.onLayoutDesc(e)}
                 numberOfLines={showMoreDesc ? null : 3} 
                 style={styles.descText}
@@ -291,8 +324,10 @@ export default class BookDetail extends BasePage {
               alignItems: 'center',
               borderColor: AppColors.dividersColor,
               borderRightWidth: StyleSheet.hairlineWidth,
-              }}>
-            <Icon name={IconName.add} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text="加书架" />
+              }}
+              onPress={() => this.isJoinRack(exist)}
+              >
+            <Icon name={exist ? IconName.remove : IconName.add} size={24} textStyle={{fontSize: 14, color: AppColors.lightBlack}} text={exist ? '已加入' : '加书架'} />
           </TouchableOpacity>
         </View>
       </View>
