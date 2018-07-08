@@ -4,7 +4,9 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  LayoutAnimation
+  LayoutAnimation,
+  DeviceEventEmitter,
+  RefreshControl,
 } from 'react-native';
 import { Text, BasePage, Icon } from '../../components';
 import {getTopList, getOtherList, getBookDetail, getOtherName} from './index.service';
@@ -29,19 +31,31 @@ export default class Top extends BasePage {
         {title: '完结榜', order: 4, icon: 'mdLeaf', color: AppColors.success},
       ],
       otherTop: [],
+      refreshing: false,
       loadMore: false,
     };
   }
 
   componentDidMount() {
-    getOtherName({sex: 1}).then(res => {
+    this.getTopList();
+    this.emit = DeviceEventEmitter.addListener('sexChange', () => this.getTopList());
+  }
+
+  componentWillUnmount() {
+    this.emit.remove();
+  }
+
+  getTopList() {
+    getOtherName().then(res => {
       this.setState({
         otherTop: res.toplist,
         screenState: 'success',
+        refreshing: false,
       })
     }).catch(err => {
       this.setState({
-        screenState: 'success'
+        screenState: 'success',
+        refreshing: false,
       })
     })
   }
@@ -64,7 +78,14 @@ export default class Top extends BasePage {
     const {topTypes, otherTop, loadMore} = this.state;
     return (
       <View style={{flex: 1, backgroundColor: AppColors.backgroundColor}}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => this.getTopList()}
+             />
+            }
+        >
           {topTypes.map((item, index) => (
             <TouchableOpacity
               key={index}

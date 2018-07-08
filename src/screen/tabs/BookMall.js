@@ -109,8 +109,8 @@ export default class BookMall extends BasePage {
   // 获取书单
   getBookListPage() {
     Promise.all([
-      getBookList({good: 0, order: 0}),
-      getBookList({good: 0, order: 1}),
+      getBookList({good: 0, order: 0, userid: ''}),
+      getBookList({good: 0, order: 1, userid: ''}),
     ]).then(res => {
       if (res[0].success == 1) {
         this.setState({
@@ -310,9 +310,9 @@ export default class BookMall extends BasePage {
                 />
                 }
               >
-              <TitleBar title="最新发布" onPress={() => this.nav.push('CollectList', {title: '最新发布', options: {good: 0, order: 0}})} />
+              <TitleBar title="最新发布" onPress={() => this.nav.push('CollectList', {title: '最新发布', options: {good: 0, order: 0, userid: ''}})} />
               {newBookList.map(item => this._renderBookListItem(item))}
-              <TitleBar title="最多收藏" onPress={() => this.nav.push('CollectList', {title: '最多收藏', options: {good: 0, order: 1}})} />
+              <TitleBar title="最多收藏" onPress={() => this.nav.push('CollectList', {title: '最多收藏', options: {good: 0, order: 1, userid: ''}})} />
               {hotBookList.map(item => this._renderBookListItem(item))}
             </ScrollView>}
           </View>

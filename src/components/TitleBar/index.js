@@ -31,6 +31,7 @@ export default class TitleBar extends React.Component {
         style={[{
           flexDirection: 'row', 
           padding: 10,
+          backgroundColor: 'white',
           borderBottomWidth: AppSizes.hairLineWidth,
           borderColor: AppColors.dividersColor,
         }, style]}

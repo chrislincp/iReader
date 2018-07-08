@@ -26,7 +26,7 @@ export default class BookItem extends React.Component {
         <View style={{flex: 1, flexDirection: 'column'}}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text>{item.bookname}</Text>
-            <Text style={{color: AppColors.themeColor}}>{item.score}</Text>
+            <Text style={{color: AppColors.themeColor, fontSize: 16}}>{item.score}</Text>
           </View>
           <View style={{flex: 1, justifyContent: 'center'}}>
             <Text numberOfLines={2} style={AppStyles.smallText}>{item.description}</Text>
