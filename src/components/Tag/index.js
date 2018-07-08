@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View,
   StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { AppColors } from '../../themes';
@@ -55,10 +56,12 @@ export default class Tag extends React.Component {
   }
 
   render() {
-    const {style, textStyle, title} = this.props;
+    const {style, textStyle, title, onPress} = this.props;
     const {color} = this.state;
     return (
-      <View 
+      <TouchableOpacity 
+        onPress={() => onPress()}
+        disabled={!onPress}
         style={[
           styles.tagContent,
           { borderColor: color }, 
@@ -72,7 +75,7 @@ export default class Tag extends React.Component {
           ]}>
           {title}
         </Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
