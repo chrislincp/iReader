@@ -51,7 +51,7 @@ export default class Tag extends React.Component {
         break;
     }
     this.state = {
-      color,
+      color: props.color || color,
     }
   }
 
