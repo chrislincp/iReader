@@ -9,6 +9,20 @@ import { Comments, DetailComment } from '../screen/bookComments';
 import { AppColors } from '../themes';
 import Search from '../screen/search';
 import BookPages from '../screen/bookPages';
+import {Login, Register} from '../screen/login';
+import Splash from '../screen/splash';
+import {
+  Config,
+  Experience,
+  FeedBack,
+  MyBookList,
+  MyComment,
+  MyInfo,
+  MyTopic,
+  Task,
+  About,
+} from '../screen/mine';
+
 
 const Tab = TabNavigator(
   {
@@ -36,6 +50,7 @@ const Tab = TabNavigator(
 
 const MainStack = StackNavigator(
   {
+    Splash: { screen: Splash },
     Tab: { screen: Tab },
     BookDetail: {screen: BookDetail},
     BookList: {screen: BookList},
@@ -47,6 +62,15 @@ const MainStack = StackNavigator(
     BookSortList: {screen: BookSortList},
     Search: {screen: Search},
     BookPages: {screen: BookPages},
+    Config: {screen: Config},
+    Experience: {screen: Experience},
+    FeedBack: {screen: FeedBack},
+    MyBookList: {screen: MyBookList},
+    MyComment: {screen: MyComment},
+    MyInfo: {screen: MyInfo},
+    MyTopic: {screen: MyTopic},
+    Task: {screen: Task},
+    About: {screen: About},
   },
   {
     headerMode: 'none',
@@ -65,10 +89,21 @@ const MainStack = StackNavigator(
   },
 );
 
+const LoginStack = StackNavigator(
+  {
+    Login: { screen: Login },
+    Register: { screen: Register },
+  },
+  {
+    headerMode: 'none',
+  },
+);
+
 
 const RootStack = StackNavigator(
   {
     MainStack: { screen: MainStack },
+    LoginStack: {screen: LoginStack },
   },
   {
     initialRouteName: 'MainStack',
