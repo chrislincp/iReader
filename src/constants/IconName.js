@@ -56,5 +56,9 @@ export default {
   power: 'md-power',
   bookmarks: 'ios-bookmarks',
   create: 'ios-create',
-  gameController: 'ios-game-controller-a'
+  gameController: 'ios-game-controller-a',
+  contactOutlune: 'ios-contact-outline',
+  lock: 'ios-lock-outline',
+  eye: 'ios-eye-outline',
+  eyeOff: 'ios-eye-off-outline'
 };

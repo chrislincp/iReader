@@ -13,7 +13,6 @@ const app = {
 
 // 字体颜色
 const text = {
-  textThemeColor: '#FF3366',
   textNormalColor: '#111111',
   textTabInitColor: '#B9C4CE',
   textGreyColor: '#888',

@@ -61,3 +61,9 @@ export const getOtherList = (opt) => {
   return Post(url, opt);
 }
 
+export const removeBook = (opt) => {
+  const url = 'http://api.aixuansm.com/book/remove_bookcase';
+  return Post(url, opt);
+}
+
+

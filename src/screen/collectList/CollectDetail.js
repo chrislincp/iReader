@@ -6,10 +6,11 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { BasePage, Text, } from '../../components';
+import { BasePage, Text, Tag, Toast, } from '../../components';
 import { AppStyles, AppColors, AppSizes } from '../../themes';
-import { getCollectDetail } from './index.service';
+import { getCollectDetail, checkCollected, cancelCollectBooklist, collectBooklist } from './index.service';
 import { timeCompare } from '../../utils/utils';
+import store from '../../store';
 
 export default class CollectDetail extends BasePage {
   constructor(props) {
@@ -17,13 +18,25 @@ export default class CollectDetail extends BasePage {
     this.state = {
       screenState: 'loading',
       navProps: this.nav.state.params,
-      collectInfo: {}
+      collectInfo: {},
+      isCollected: false,
     }
   }
 
   componentDidMount() {
     const {navProps} = this.state;
-    getCollectDetail({booklistid: navProps.id}).then(res => {
+    checkCollected({booklistid: navProps.id}).then(res => {
+      if (res.success == 1) {
+        this.setState({
+          isCollected: res.iscollect == 1 ? true : false,
+        })
+        this.getDetail(navProps.id);
+      }
+    })
+  }
+
+  getDetail(id) {
+    getCollectDetail({booklistid: id}).then(res => {
       this.setState({
         collectInfo: res.booklistinfo,
         screenState: 'success'
@@ -35,14 +48,40 @@ export default class CollectDetail extends BasePage {
     })
   }
 
+  collect() {
+    const {isCollected, collectInfo} = this.state;
+    if (isCollected) {
+      cancelCollectBooklist({booklistid: collectInfo.booklistid}).then(res => {
+        if (res.success == 1) {
+          Toast.show('取消成功');
+          this.setState({ isCollected: false })
+        }
+      }).catch(err => {
+        console.log(err);
+        Toast.show('取消失败');
+      })
+    } else {
+      collectBooklist({booklistid: collectInfo.booklistid}).then(res => {
+        if (res.success == 1) {
+          Toast.show('收藏成功');
+          this.setState({ isCollected: true })
+        }
+      }).catch(err => {
+        console.log(err);
+        Toast.show('收藏失败');
+      })
+    }
+  }
+
   _headerProps() {
     return {
       title: this.state.navProps.title,
     }
   }
 
+
   _render() {
-    const {collectInfo} = this.state;
+    const {collectInfo, isCollected} = this.state;
     return (
       <ScrollView style={AppStyles.appContainer}>
         <View style={styles.detailWrap}>
@@ -54,6 +93,7 @@ export default class CollectDetail extends BasePage {
               <Text style={{flex: 1}}>{collectInfo.nickname}</Text>
               <Text style={[AppStyles.smallText, {justifyContent: 'flex-end'}]}>{`${timeCompare(collectInfo.updatetime)}前`}</Text>
             </View>
+            {collectInfo.userid !== store.userInfo.userid && <Tag title={isCollected ? '取消' : '收藏'} onPress={() => this.collect()} style={{height: 24, paddingLeft: 8, paddingRight: 8}} />}
           </View>
           <Text style={{lineHeight: 20}}>{collectInfo.title}</Text>
           <Text style={AppStyles.smallText}>{collectInfo.description}</Text>

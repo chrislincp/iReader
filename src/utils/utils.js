@@ -169,13 +169,21 @@ export const getSex = () => {
   return new Promise((resove, reject) => {
     DeviceStorage.get('sex').then(res => {
       if (res == null) {
-        DeviceStorage.save('sex', 1);
         resove(1);
       } else {
         resove(res);
       }
     })
   })
+}
+
+export const convertObject = (data) => {
+  let obj = {};
+  Object.keys(data).forEach(key => {
+    if (data[key] == undefined || data[key] == null || data[key] == '') return;
+    else obj[key] = data[key];
+  })
+  return obj;
 }
 
 

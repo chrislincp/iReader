@@ -7,7 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 import { BasePage, Text, } from '../../components';
-import { AppColors } from '../../themes';
+import { AppColors, AppSizes } from '../../themes';
 import { getBookDir } from './index.service';
 import { ifIphoneX } from '../../utils/utils';
 
@@ -19,6 +19,7 @@ export default class BookDir extends BasePage {
       bookInfo: this.nav.state.params,
       dirList: [],
       order: false,
+      initialNum: Math.floor(((AppSizes.screenHeight - ifIphoneX(88, 64)) / 36)) + 1,
     }
   }
 
@@ -101,7 +102,8 @@ export default class BookDir extends BasePage {
   }
 
   _render() {
-    const {bookInfo, dirList} = this.state;
+    const {bookInfo, dirList, initialNum} = this.state;
+    console.log(initialNum)
     return (
       <View style={{flex: 1, backgroundColor: AppColors.backgroundColor, marginBottom: ifIphoneX(20, 0)}}>
         <FlatList
@@ -111,6 +113,7 @@ export default class BookDir extends BasePage {
           getItemLayout={(data, index) => ({length: 36, offset: 36 * index, index})}
           keyExtractor={(item) => item.chapterid.toString()}
           renderItem={({item}) => this._renderItem(item)}
+          initialNumToRender={initialNum}
           // ItemSeparatorComponent={() => <View style={{height: StyleSheet.hairlineWidth, backgroundColor: AppColors.dividersColor}} />}
           />
       </View>

@@ -51,6 +51,8 @@ export default class BookPages extends BasePage {
       order: false,
       loading: false,
       initialIndex: 0,
+      initialNum: Math.floor(((AppSizes.screenHeight - ifIphoneX(88, 64)) / 36)) + 1,
+      initialDirIndex: 0,
     }
   }
   _renderHeader() {
@@ -874,21 +876,36 @@ export default class BookPages extends BasePage {
         })
       break;
       case 'dir': 
+        dirList.forEach((item, index) => {
+          // if (item.chapterid == currentDetail.chapter.chapterid) this.refs.flatlist.scrollToIndex({index});
+          if (item.chapterid == currentDetail.chapter.chapterid) this.setState({initialDirIndex: index});
+        })
         this.setState({ showDirList: true });
-        setTimeout(() => {
-          dirList.forEach((item, index) => {
-            if (item.chapterid == currentDetail.chapter.chapterid) this.refs.flatlist.scrollToIndex({index});
-          })
-        });
+        this.Dir = <FlatList
+          style={{backgroundColor: 'white'}}
+          ref="flatlist"
+          data={dirList}
+          initialNumToRender={this.state.initialNum}
+          initialScrollIndex={this.state.initialDirIndex}
+          getItemLayout={(data, index) => ({length: 36, offset: 36 * index, index})}
+          keyExtractor={(item) => item.chapterid.toString()}
+          renderItem={({item}) => this._renderDirItem(item)}
+        />
+        // setTimeout(() => {
+        //   dirList.forEach((item, index) => {
+        //     // if (item.chapterid == currentDetail.chapter.chapterid) this.refs.flatlist.scrollToIndex({index});
+        //     if (item.chapterid == currentDetail.chapter.chapterid) this.setState({initialDirIndex: index});
+        //   })
+        // });
       break;
     }
   }
 
   _render() {
-    const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail, initialIndex} = this.state;
+    const {showOptions, options, chapterDetail, showOptsModal, navProps, order, dirList, currentDetail, initialIndex, initialNum, initialDirIndex} = this.state;
     const {bookInfo} = navProps;
     const contentLenth = options.scroll == 'x' ? AppSizes.screenWidth : AppSizes.screenHeight;
-    console.log('render currentdetail', currentDetail, initialIndex);
+    console.log('render currentdetail', currentDetail, initialIndex, initialDirIndex);
     return (
       <View style={{backgroundColor: options.color, flex: 1}}>
         <Animated.View
@@ -987,7 +1004,10 @@ export default class BookPages extends BasePage {
                 name={IconName.close} 
                 size={40} 
                 style={{paddingLeft: 20, paddingRight: 20}} 
-                onPress={() => this.setState({showDirList: false})} 
+                onPress={() => {
+                  this.setState({showDirList: false})
+                  this.Dir = null;
+                }} 
                 />}
               title={bookInfo.bookname}
               right={<TouchableOpacity
@@ -1007,14 +1027,7 @@ export default class BookPages extends BasePage {
                   />
                 </TouchableOpacity>}
               />
-              <FlatList
-                style={{backgroundColor: 'white'}}
-                ref="flatlist"
-                data={dirList}
-                getItemLayout={(data, index) => ({length: 36, offset: 36 * index, index})}
-                keyExtractor={(item) => item.chapterid.toString()}
-                renderItem={({item}) => this._renderDirItem(item)}
-              />
+              {this.Dir}
           </View>
         </AnimateModal>
       </View>

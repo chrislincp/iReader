@@ -16,6 +16,7 @@ export default class Comments extends BasePage {
         categoryid: 0,
         order: 0,
         bookid: this.nav.state.params.id,
+        userid: '',
       },
     };
   }
